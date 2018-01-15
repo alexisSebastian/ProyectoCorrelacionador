@@ -16,6 +16,8 @@ usr=0;
 fch=getdate();
 Source="defaultobjectserver";
 serial = Ticket;
+result = "Resuelto";
+cancel = "Cnacelado";
 log( "SERIAL: " + serial);
 
 log("El estado es: " + Estado + "\nEl numero de ticket es: " + Ticket + "\nEl nombre de quien reporta es: " + Reporte);
@@ -30,13 +32,23 @@ el analista vuelve a solicitar el proceso a partir del mismo evento, la politica
 3.- si el evento es cancelado se registra el id del incidente, se elimina el id del incidente y vuelve a ser candidato.
 */
 
-if(Ticket = "" || Estado = "" || Reporte = "" || Estado != "Resuelto" || Estado != "Cancelado"){
-   WSListenerResult = NewObject();
-   WSListenerResult.Estado="El estado esta vacio";
-   WSListenerResult.Ticket = "El Ticket esta Vacio";
-   WSListenerResult.Reporte = "El reporte esta Vacio";
+if(Ticket == ""){
+    WSListenerResult = NewObject();
+    WSListenerResult.Ticket = "El Ticket esta Vacio";
 }
-if(Estado = "Resuelto" && Ticket >= "" && Reporte >= ""){
+if (Estado == "" ) {
+    WSListenerResult = NewObject();
+    WSListenerResult.Estado="El estado esta vacio";
+}
+if (Reporte == "") {
+    WSListenerResult = NewObject();
+    WSListenerResult.Reporte = "El reporte esta Vacio";
+}
+if (Estado != "Resuelto" || (Estado != "Cancelado") {
+    WSListenerResult = NewObject();
+    WSListenerResult.Reporte = "El estado es diferente del esperado";
+}
+if(Estado == "Resuelto" && Ticket >= "" && Reporte >= ""){
     WSListenerResult = NewObject();
     WSListenerResult.Estado="Estado recibido";
     WSListenerResult.Ticket = "Numero de ticket recibido";
@@ -52,17 +64,17 @@ if(Estado = "Resuelto" && Ticket >= "" && Reporte >= ""){
     BatchUpdate('data', Filter1, UpdateExpression);
     log("FIN DE LA POLITICA NetcoolCreateIncident_A");
 
-} elseif (Estado = "Cancelado"){
+} elseif (Estado == "Cancelado"){
     WSListenerResult = NewObject();
     WSListenerResult.Estado="Estado recibido: " + Estado;
  
-    //Seactualiza el campo del evento en CMDB_Istatus a Resuelto 
+    //Seactualiza el campo del evento en CMDB_Istatus a Cancelado 
     Filter1="SMS_TicketNumber='"+Ticket+"'";
     log("SERIAL: " + Filter1);
-    UpdateExpression="CMDB_Istatus = '"+Estado+"'";
+    UpdateExpression="CMDB_Istatus = '"+Estado+"', SMS_TicketNumber = '' ";
     log("UPDATEExpression: " + UpdateExpression);
     BatchUpdate('data', Filter1, UpdateExpression);
-    log("FIN DE LA POLITICA NetcoolCreateIncident_A");
+    
 
     //ACTUALIZACION EN BITACORA
    /*msj = fch + "|" + "Estado del incidente: " + Estado + "|" + "El estado fue cancelado" + "|" + "El id de incidente es: " + Ticket;
@@ -70,6 +82,8 @@ if(Estado = "Resuelto" && Ticket >= "" && Reporte >= ""){
    MySQL = "insert into alerts.journal (KeyField,Serial,UID,Chrono,Text1) values('"+ MyKey +"',"+ serial +","+ usr +","+ fch + ",'"+msj+"')";
    log ("El Query del Insert en alerts.journal es: "+MySQL);
    DirectSQL(Source,MySQL,false);*/
+
+   log("FIN DE LA POLITICA NetcoolCreateIncident_A");
 }
 
 
