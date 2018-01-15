@@ -76,13 +76,14 @@ if(Estado == "Resuelto" && Ticket >= "" && Reporte >= ""){
     BatchUpdate('data', Filter1, UpdateExpression);
     
 
-    //ACTUALIZACION EN BITACORA
+    //ACTUALIZACION EN BITACORA se necesita modificar la politica
+    
    /*msj = fch + "|" + "Estado del incidente: " + Estado + "|" + "El estado fue cancelado" + "|" + "El id de incidente es: " + Ticket;
    MyKey = usr +":"+ fch; 
    MySQL = "insert into alerts.journal (KeyField,Serial,UID,Chrono,Text1) values('"+ MyKey +"',"+ serial +","+ usr +","+ fch + ",'"+msj+"')";
    log ("El Query del Insert en alerts.journal es: "+MySQL);
    DirectSQL(Source,MySQL,false);*/
-
+ 
    log("FIN DE LA POLITICA NetcoolCreateIncident_A");
 }
 
