@@ -21,20 +21,17 @@ usr=0;
 fch=getdate();
 Source="defaultobjectserver";
 
-
-log("El FirstOcurrence es : " + Time);
-
 log("\nCIID ES: "+@CMDB_Logical_Name+"\nEL SERIAL ES: "+@Serial+"\nEL CLLI ES: "+@TMX_NodeName+"\nEL PROMOTE ES: " +@TMX_Promote+"\nEL AlertKey ES: "+@AlertKey+"\nTALLY: "+@Tally+"\nLastOcurrence ES: "+@LastOccurrence+"\nEl ESTATUS ES: "+@CMDB_Istatus+"\nEl AlertGroup ES: "+@AlertGroup+"\nLa REFERENCIA SISA ES: "+@TMX_Reference+"\nLA SUBRED ES:"+@CMDB_Subred+"\nEL TIPO DE RED ES:"+@CMDB_Tipo_Red+"\nEL ELEMENTO DE RED ES: "+@CMDB_Topologia); 
 
-//Esta pol√≠tica est√° generada por el asistente de Impact. 
+//Esta polÌtica est· generada por el asistente de Impact. 
 
-//Esta pol√≠tica se basa en el archivo WSDL en /opt/IBM/tivoli/impact/NetcoolIncident.wsdl
+//Esta polÌtica se basa en el archivo WSDL en /opt/IBM/tivoli/impact/NetcoolIncident.wsdl
 log("Incidente");
-log("Iniciar pol√≠tica 'Incidente'...");
+log("Iniciar polÌtica 'Incidente'...");
 //Especifique el nombre de paquete tal como se ha definido al compilar WSDL en Impact
 WSSetDefaultPKGName('NetcoolCrearIncidente');
 
-//Especificar par√°metros
+//Especificar par·metros
 CreateNetcoolIncidentRequestDocument=WSNewObject("com.hp.schemas.sm._7.CreateNetcoolIncidentRequestDocument");
 _CreateNetcoolIncidentRequest=WSNewSubObject(CreateNetcoolIncidentRequestDocument,"CreateNetcoolIncidentRequest");
 
@@ -132,7 +129,7 @@ CreateNetcoolIncidentRequestDocument);*/
 
 
 
-//Especifique un nombre de servicio web, un punto final y un m√©todo
+//Especifique un nombre de servicio web, un punto final y un mÈtodo
 WSService = 'NetcoolIncident';
 WSEndPoint = 'http://qcalswpr:13083/SM/7/ws';
 WSMethod = 'CreateNetcoolIncident';
@@ -162,7 +159,7 @@ if (ticket != ""){
     log("FIN DE LA POLITICA NetcoolCreateIncident_A");
 
    //ACTUALIZACION EN BITACORA
-   msj= fch +"|" + "Evento: " + serial + "|" + "Inicia proceso incidente en Service Manager" + "|" + "Se genero exitosamente el insidente en SM";
+   msj= fch +"|" + "Evento: " + serial + "|" + "Inicia proceso incidente en Service Manager" + "|" + "Se genero exitosamente el insidente en SM" + "|" + "ID del incidente: " + ticket;
    MyKey = serial +":"+ usr +":"+ fch; 
    MySQL = "insert into alerts.journal (KeyField,Serial,UID,Chrono,Text1) values('"+ MyKey +"',"+ serial +","+ usr +","+ fch + ",'"+msj+"')";
    log ("El Query del Insert en alerts.journal es: "+MySQL);

@@ -11,14 +11,12 @@ log("Enrich_WSSM_StatusInc");
  * disclosure restricted by GSA ADP Schedule Contract with IBM Corp.
  ******************************************************* {COPYRIGHT-END-RM} **/
 log("****Enrich_WSSM_StatusInc*****");
-ticket = @SMS_TicketNumber;
 usr=0;
 fch=getdate();
+serial = @Serial;
 Source="defaultobjectserver";
-serial = Ticket;
 result = "Resuelto";
-cancel = "Cnacelado";
-log( "SERIAL: " + serial);
+cancel = "Cancelado";
 
 log("El estado es: " + Estado + "\nEl numero de ticket es: " + Ticket + "\nEl nombre de quien reporta es: " + Reporte);
 
@@ -44,7 +42,7 @@ if (Reporte == "") {
     WSListenerResult = NewObject();
     WSListenerResult.Reporte = "El reporte esta Vacio";
 }
-if (Estado != "Resuelto" || (Estado != "Cancelado") {
+if (Estado != "Resuelto" || Estado != "Cancelado") {
     WSListenerResult = NewObject();
     WSListenerResult.Reporte = "El estado es diferente del esperado";
 }
@@ -67,25 +65,42 @@ if(Estado == "Resuelto" && Ticket >= "" && Reporte >= ""){
 } elseif (Estado == "Cancelado"){
     WSListenerResult = NewObject();
     WSListenerResult.Estado="Estado recibido: " + Estado;
- 
+
+    /*query = "select Serial from alerts.status where SMS_TicketNumber = '"+Ticket+"' ";
+    CountOnly = False;
+    log("El serial traido por el query es: " + query);
+    serialResult = DirectSQL(Source,query,CountOnly);
+    log("El serial traido por el query es: " + serialResult);*/
+
+    serial = DirectSQL(Source, "SELECT Serial FROM alerts.status WHERE SMS_TicketNumber = '"+Ticket+"'", False);
+    num = Length(serial);
+    k = 0;
+    if(num > 0 ){
+        while (condition) {
+            
+        }
+    }
+    log ("SERIAL: " + serial);
+  
+    
     //Seactualiza el campo del evento en CMDB_Istatus a Cancelado 
-    Filter1="SMS_TicketNumber='"+Ticket+"'";
+    /*Filter1="SMS_TicketNumber='"+Ticket+"'";
     log("SERIAL: " + Filter1);
-    UpdateExpression="CMDB_Istatus = '"+Estado+"', SMS_TicketNumber = '' ";
+    UpdateExpression="CMDB_Istatus = '"+Estado+"', SMS_TicketNumber = '', TMX_Promote = 26";
     log("UPDATEExpression: " + UpdateExpression);
-    BatchUpdate('data', Filter1, UpdateExpression);
+    BatchUpdate('data', Filter1, UpdateExpression);*/
     
 
     //ACTUALIZACION EN BITACORA se necesita modificar la politica
-    
    /*msj = fch + "|" + "Estado del incidente: " + Estado + "|" + "El estado fue cancelado" + "|" + "El id de incidente es: " + Ticket;
-   MyKey = usr +":"+ fch; 
-   MySQL = "insert into alerts.journal (KeyField,Serial,UID,Chrono,Text1) values('"+ MyKey +"',"+ serial +","+ usr +","+ fch + ",'"+msj+"')";
+   log("El mensaje es :" + msj);
+   MyKey = serial +":"+ usr +":"+ fch;
+   log("La key es: " + MyKey); 
+   MySQL = "insert into alerts.journal (KeyField,Serial,UID,Chrono,Text1) values('"+ MyKey +"','"+ serial +"',"+ usr +","+ fch + ",'"+msj+"')";
    log ("El Query del Insert en alerts.journal es: "+MySQL);
    DirectSQL(Source,MySQL,false);*/
  
    log("FIN DE LA POLITICA NetcoolCreateIncident_A");
 }
-
 
 //WSListenerResult.estado="Cancelado";

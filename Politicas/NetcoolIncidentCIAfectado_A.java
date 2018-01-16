@@ -16,15 +16,15 @@ Source="defaultobjectserver";
 log("\n\n\nCMDB_Logical_Name: " + @CMDB_Logical_Name + "\nserial: " + @Serial + "\nServerName: "+ @ServerName + "\nServerSerial:" +@ServerSerial+"\nStateChange: " +@StateChange+"\nTMX_NodeName: "+@TMX_NodeName+"\nTMX_Promote: "+@TMX_Promote+"\nTALLY: "+@Tally);
 
 
-//Esta pol√≠tica est√° generada por el asistente de Impact. 
+//Esta polÌtica est· generada por el asistente de Impact. 
 
-//Esta pol√≠tica se basa en el archivo WSDL en /opt/IBM/tivoli/impact/NetcoolIncidentesCIAfectado.wsdl
+//Esta polÌtica se basa en el archivo WSDL en /opt/IBM/tivoli/impact/NetcoolIncidentesCIAfectado.wsdl
 log("NetcoolIncidentesCIAfectado");
-log("Iniciar pol√≠tica 'NetcoolIncidentesCIAfectado'...");
+log("Iniciar polÌtica 'NetcoolIncidentesCIAfectado'...");
 //Especifique el nombre de paquete tal como se ha definido al compilar WSDL en Impact
 WSSetDefaultPKGName('NetcoolIncidentesCIAfectado');
 
-//Especificar par√°metros
+//Especificar par·metros
 RetrieveNetcoolIncidentesCIAfectadoRequestDocument=WSNewObject("com.hp.schemas.sm._7.RetrieveNetcoolIncidentesCIAfectadoRequestDocument");
 _RetrieveNetcoolIncidentesCIAfectadoRequest=WSNewSubObject(RetrieveNetcoolIncidentesCIAfectadoRequestDocument,"RetrieveNetcoolIncidentesCIAfectadoRequest");
 
@@ -43,7 +43,7 @@ _Instance = WSNewSubObject(_Model,"Instance");
 WSParams = {RetrieveNetcoolIncidentesCIAfectadoRequestDocument};
 
 
-//Especifique un nombre de servicio web, un punto final y un m√©todo
+//Especifique un nombre de servicio web, un punto final y un mÈtodo
 WSService = 'NetcoolIncidentesCIAfectado';
 WSEndPoint = 'http://qcalswpr:13081/SM/7/ws';
 WSMethod = 'RetrieveNetcoolIncidentesCIAfectado';
@@ -61,7 +61,7 @@ log("Se va a invocar la llamada de servicio web RetrieveNetcoolIncidentesCIAfect
 WSInvokeDLResult = WSInvokeDL(WSService, WSEndPoint, WSMethod, WSParams, callProps);
 log("Resultado devuelto de la llamada de servicio web RetrieveNetcoolIncidentesCIAfectado: " +WSInvokeDLResult);
 
-//Se extrae el valor de null ya que este indica que el ciid no tiene ning√∫n incidente asociado entonces se promueve a 28
+//Se extrae el valor de null ya que este indica que el ciid no tiene ning˙n incidente asociado entonces se promueve a 28
 //respuesta = RExtract(WSInvokeDLResult,'.*tmx.im.id=([A-Z]+)".*');
 returnCode = RExtract(WSInvokeDLResult,'.*returnCode="([0-9]).*');
 
@@ -79,7 +79,7 @@ if(returnCode = 9 || impactFlag = 200){
     log ("El Query del Insert en alerts.journal es: "+MySQL);
     DirectSQL(Source,MySQL,false);
     
-}elseif (returnCode = 0 || ImpactFlag = 2001){
+}elseif (returnCode = 0 || ImpactFlag = 201){
    //EJECUTAR UN BATCHUPDATE PARA AGREGAR EL NUMERO DE TICKET Y PROMOVER A 29
     Filter1="Serial="+serial; //Este es el serial del evento
     log ("El serial del evento es: " +Filter1);

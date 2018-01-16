@@ -11,14 +11,14 @@ nodo = SUBSTRING(@TMX_NodeName, 0, 11);
 
 log("Primer indice del Nodo: " + nodo);
 
-//Esta pol√≠tica est√° generada por el asistente de Impact. 
+//Esta polÌtica est· generada por el asistente de Impact. 
 
-//Esta pol√≠tica se basa en el archivo WSDL en /opt/IBM/tivoli/impact/NetcoolDTCMDB_1.wsdl
+//Esta polÌtica se basa en el archivo WSDL en /opt/IBM/tivoli/impact/NetcoolDTCMDB_1.wsdl
 
 //Especifique el nombre de paquete tal como se ha definido al compilar WSDL en Impact
 WSSetDefaultPKGName('SM_DTCMDB');
 
-//Especificar par√°metros
+//Especificar par·metros
 RetrieveNetcoolDTCMDBRequestDocument=WSNewObject("com.hp.schemas.sm._7.RetrieveNetcoolDTCMDBRequestDocument");
 _RetrieveNetcoolDTCMDBRequest=WSNewSubObject(RetrieveNetcoolDTCMDBRequestDocument,"RetrieveNetcoolDTCMDBRequest");
 
@@ -32,7 +32,7 @@ _Instance = WSNewSubObject(_Model,"Instance");
  
 WSParams = {RetrieveNetcoolDTCMDBRequestDocument};
 
-//Especifique un nombre de servicio web, un punto final y un m√©todo
+//Especifique un nombre de servicio web, un punto final y un mÈtodo
 WSService = 'NetcoolDTCMDB';
 WSEndPoint = 'http://qcalswpr:13086/SM/7/ws';
 WSMethod = 'RetrieveNetcoolDTCMDB';

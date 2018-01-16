@@ -14,15 +14,15 @@ Source="defaultobjectserver";
 
 log("\n\n\nCMDB_Logical_Name: " + @CMDB_Logical_Name + "\nserial: " + @Serial + "\nServerName: "+ @ServerName + "\nServerSerial:" +@ServerSerial+"\nStateChange: " +@StateChange+"\nTMX_NodeName: "+@TMX_NodeName+"\nTMX_Promote: "+@TMX_Promote+"\nTALLY: "+@Tally);
 
-//Esta pol√≠tica est√° generada por el asistente de Impact. 
+//Esta polÌtica est· generada por el asistente de Impact. 
 
-//Esta pol√≠tica se basa en el archivo WSDL en /opt/IBM/tivoli/impact/NetcoolDTCambios.wsdl
+//Esta polÌtica se basa en el archivo WSDL en /opt/IBM/tivoli/impact/NetcoolDTCambios.wsdl
 log("Enrich_DTCambios");
-log("Iniciar pol√≠tica 'Enrich_DTCambios'...");
+log("Iniciar polÌtica 'Enrich_DTCambios'...");
 //Especifique el nombre de paquete tal como se ha definido al compilar WSDL en Impact
 WSSetDefaultPKGName('SM_DTCambios');
 
-//Especificar par√°metros
+//Especificar par·metros
 RetrieveNetcoolDTCambiosListRequestDocument=WSNewObject("com.hp.schemas.sm._7.RetrieveNetcoolDTCambiosListRequestDocument");
 _RetrieveNetcoolDTCambiosListRequest=WSNewSubObject(RetrieveNetcoolDTCambiosListRequestDocument,"RetrieveNetcoolDTCambiosListRequest");
 
@@ -38,7 +38,7 @@ _IDCambio = WSNewSubObject(_Keys_0_,"IDCambio");
 WSParams = {RetrieveNetcoolDTCambiosListRequestDocument};
 
 
-//Especifique un nombre de servicio web, un punto final y un m√©todo
+//Especifique un nombre de servicio web, un punto final y un mÈtodo
 WSService = 'NetcoolDTCambios';
 WSEndPoint = 'http://qcalswpr:13081/SM/7/ws';
 WSMethod = 'RetrieveNetcoolDTCambiosList';
@@ -80,12 +80,12 @@ if(returnCode = 9){
 //Si el evento tiene cambios entonces el valor de impactFlag = 201 
 elseif(returnCode = 0){
 
-  //Validaci√≥n para que los valores no vengan vac√≠os o nulos  
+  //ValidaciÛn para que los valores no vengan vacÌos o nulos  
     Filter1="Serial="+serial; //Este es el serial del evento
     log ("El serial del evento es: " +Filter1);
-  //UpdateExpression="ImpactFlag=201"; //agregar campos del evento esperar confirmaci√≥n
+    UpdateExpression="ImpactFlag=201"; //agregar campos del evento esperar confirmaciÛn
     log ("El UPDATE EXPRESSION ES: "+UpdateExpression);
-  //BatchUpdate('data', Filter1, UpdateExpression); //BatchUpdate sirve para actualizar el campo en el evento
+    BatchUpdate('data', Filter1, UpdateExpression); //BatchUpdate sirve para actualizar el campo en el evento
 
   //ACTUALIZACION EN BITACORA
     msj= fch +"|" + "Evento: " + serial + "|" + "Enriquece evento" + "|" + "El CIID tiene cambios asociados";
