@@ -85,38 +85,37 @@ if((CIId != "" && elemetRed != "" && estatus != "")|| (elementRed = "Equipo" && 
    log ("El Query del Insert en alerts.journal es: "+MySQL);
    DirectSQL(Source,MySQL,false);
 
-}
-elseif ((CIId = "" && elemetRed = "" && estatus = "")|| (elementRed = "Equipo" && estatus != "GESTIONADO") || (elementRed = "Enlaces" && estatus != "GESTIONADO") || (elementRed = "Servicio" && estatus != "LIBERADO") || (elementRed = "Servicio Cliente Final" && estatus != "En operacion") || (elementRed = "Puerto" && estatus != "OCUPADO") || (elementRed = "Tarjeta" && estatus != "GESTIONADO")) 
+}elseif ((CIId = "" && elemetRed = "" && estatus = "")|| (elementRed = "Equipo" && estatus != "GESTIONADO") || (elementRed = "Enlaces" && estatus != "GESTIONADO") || (elementRed = "Servicio" && estatus != "LIBERADO") || (elementRed = "Servicio Cliente Final" && estatus != "En operacion") || (elementRed = "Puerto" && estatus != "OCUPADO") || (elementRed = "Tarjeta" && estatus != "GESTIONADO")) 
 {
-    Filter1="Serial="+serial; //Este es el serial del evento
+  if (returnCode == 9) {
+    //Se actualiza en la tabla alerts.status
+    Filter1="Serial="+serial;
     log ("El serial del evento es: " +Filter1);
     UpdateExpression="ImpactFlag=201, TMX_Promote = 0";
     log ("El UPDATE EXPRESSION ES: "+UpdateExpression);
     BatchUpdate('data', Filter1, UpdateExpression);
 
-  //ACTUALIZACION EN BITACORA
+  //Se actualiza en la tabla alerts.jorunal
+   msj= fch +"|" + "Evento: " + serial + "|" + "No se encontro informacion" + "|" + "Sin informacin en la fuente de enriquecimiento";
+   MyKey = serial +":"+ usr +":"+ fch; 
+   MySQL = "insert into alerts.journal (KeyField,Serial,UID,Chrono,Text1) values('"+ MyKey +"',"+ serial +","+ usr +","+ fch + ",'"+msj+"')";
+   DirectSQL(Source,MySQL,false);
+   log ("El Query del Insert en alerts.journal es: "+MySQL);
+  }else{
+
+    Filter1="Serial="+serial;
+    log ("El serial del evento es: " +Filter1);
+    UpdateExpression="ImpactFlag=201, TMX_Promote = 0";
+    log ("El UPDATE EXPRESSION ES: "+UpdateExpression);
+    BatchUpdate('data', Filter1, UpdateExpression);
+
+
    msj= fch +"|" + "Evento: " + serial + "|" + "Enriquece evento" + "|" + "Informacion incompleta en la fuente de enriquecimiento";
    MyKey = serial +":"+ usr +":"+ fch; 
    MySQL = "insert into alerts.journal (KeyField,Serial,UID,Chrono,Text1) values('"+ MyKey +"',"+ serial +","+ usr +","+ fch + ",'"+msj+"')";
    log ("El Query del Insert en alerts.journal es: "+MySQL);
    DirectSQL(Source,MySQL,false);
+  }   
 }
-elseif (returnCode = 9)
-{
-
-    Filter1="Serial="+serial; //Este es el serial del evento
-    log ("El serial del evento es: " +Filter1);
-    UpdateExpression="ImpactFlag=201, TMX_Promote = 0";
-    log ("El UPDATE EXPRESSION ES: "+UpdateExpression);
-    BatchUpdate('data', Filter1, UpdateExpression);
-
-
-  //ACTUALIZACION EN BITACORA
-   msj= fch +"|" + "Evento: " + serial + "|" + "No se encontro informacion" + "|" + "Sin informacin en la fuente de enriquecimiento";
-   MyKey = serial +":"+ usr +":"+ fch; 
-   MySQL = "insert into alerts.journal (KeyField,Serial,UID,Chrono,Text1) values('"+ MyKey +"',"+ serial +","+ usr +","+ fch + ",'"+msj+"')";
-   log ("El Query del Insert en alerts.journal es: "+MySQL);
-}
-
 
 log("Fin de la politica NetcoolDTCMDB_A");
