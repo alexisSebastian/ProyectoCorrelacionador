@@ -20,16 +20,6 @@ cancel = "Cancelado";
 
 log("El estado es: " + Estado + "\nEl numero de ticket es: " + Ticket + "\nEl nombre de quien reporta es: " + Reporte);
 
-/*
-Validaciones para los estados de resuelto y cancelado
-1.- Flujo basico el estado glbal cambia a RESUELTO y se elimina el evento *
-2.-Flujo alterno 1  no se registra la solucion apartir del evento, el id del incidente se registra en el diario y se debe eliminar del id de incidente para 
-volver a ser candidato a incidente y realizar de nuevo la peticion a sm, el operador al detectar que el evento termino satisfactoriamente pero continua 
-el analista vuelve a solicitar el proceso a partir del mismo evento, la politica registra la solicitud manual y el usuario que solicito el proceso.
-
-3.- si el evento es cancelado se registra el id del incidente, se elimina el id del incidente y vuelve a ser candidato.
-*/
-
 if(Ticket == ""){
     WSListenerResult = NewObject();
     WSListenerResult.Ticket = "El Ticket esta Vacio";
@@ -72,33 +62,27 @@ if(Estado == "Resuelto" && Ticket >= "" && Reporte >= ""){
     serialResult = DirectSQL(Source,query,CountOnly);
     log("El serial traido por el query es: " + serialResult);*/
 
-    serial = DirectSQL(Source, "SELECT Serial FROM alerts.status WHERE SMS_TicketNumber = '"+Ticket+"'", False);
-    num = Length(serial);
-    k = 0;
-    if(num > 0 ){
-        while (condition) {
-            
-        }
-    }
+    sql = DirectSQL(Source, "SELECT Serial FROM alerts.status WHERE SMS_TicketNumber = '"+Ticket+"'", False);
+    serial = sql[0];
     log ("SERIAL: " + serial);
   
     
     //Seactualiza el campo del evento en CMDB_Istatus a Cancelado 
-    /*Filter1="SMS_TicketNumber='"+Ticket+"'";
+    Filter1="SMS_TicketNumber='"+Ticket+"'";
     log("SERIAL: " + Filter1);
     UpdateExpression="CMDB_Istatus = '"+Estado+"', SMS_TicketNumber = '', TMX_Promote = 26";
     log("UPDATEExpression: " + UpdateExpression);
-    BatchUpdate('data', Filter1, UpdateExpression);*/
+    BatchUpdate('data', Filter1, UpdateExpression);
     
 
     //ACTUALIZACION EN BITACORA se necesita modificar la politica
-   /*msj = fch + "|" + "Estado del incidente: " + Estado + "|" + "El estado fue cancelado" + "|" + "El id de incidente es: " + Ticket;
+   msj = fch + "|" + "Estado del incidente: " + Estado + "|" + "El estado fue cancelado" + "|" + "El id de incidente es: " + Ticket;
    log("El mensaje es :" + msj);
    MyKey = serial +":"+ usr +":"+ fch;
    log("La key es: " + MyKey); 
-   MySQL = "insert into alerts.journal (KeyField,Serial,UID,Chrono,Text1) values('"+ MyKey +"','"+ serial +"',"+ usr +","+ fch + ",'"+msj+"')";
+   MySQL = "insert into alerts.journal (KeyField,Serial,UID,Chrono,Text1) values('"+ MyKey +"',"+ serial +","+ usr +","+ fch + ",'"+msj+"')";
    log ("El Query del Insert en alerts.journal es: "+MySQL);
-   DirectSQL(Source,MySQL,false);*/
+   DirectSQL(Source,MySQL,false);
  
    log("FIN DE LA POLITICA NetcoolCreateIncident_A");
 }
