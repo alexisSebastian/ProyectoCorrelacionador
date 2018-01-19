@@ -7,7 +7,7 @@ identificador = @Identifier;
 clli = @TMX_NodeName;
 promote = @TMX_Promote;
 tally = @Tally;
-alertKey = @AlertKey; 
+alertKey = @AlertKey;
 fisrtOcurrence = @FirstOccurrence;
 lastOcurrence = @LastOccurrence;
 estatus = @CMDB_Istatus;
@@ -21,17 +21,17 @@ usr=0;
 fch=getdate();
 Source="defaultobjectserver";
 
-log("\nCIID ES: "+@CMDB_Logical_Name+"\nEL SERIAL ES: "+@Serial+"\nEL CLLI ES: "+@TMX_NodeName+"\nEL PROMOTE ES: " +@TMX_Promote+"\nEL AlertKey ES: "+@AlertKey+"\nTALLY: "+@Tally+"\nLastOcurrence ES: "+@LastOccurrence+"\nEl ESTATUS ES: "+@CMDB_Istatus+"\nEl AlertGroup ES: "+@AlertGroup+"\nLa REFERENCIA SISA ES: "+@TMX_Reference+"\nLA SUBRED ES:"+@CMDB_Subred+"\nEL TIPO DE RED ES:"+@CMDB_Tipo_Red+"\nEL ELEMENTO DE RED ES: "+@CMDB_Topologia); 
+log("\nCIID ES: "+@CMDB_Logical_Name+"\nEL SERIAL ES: "+@Serial+"\nEL CLLI ES: "+@TMX_NodeName+"\nEL PROMOTE ES: " +@TMX_Promote+"\nEL AlertKey ES: "+@AlertKey+"\nTALLY: "+@Tally+"\nLastOcurrence ES: "+@LastOccurrence+"\nEl ESTATUS ES: "+@CMDB_Istatus+"\nEl AlertGroup ES: "+@AlertGroup+"\nLa REFERENCIA SISA ES: "+@TMX_Reference+"\nLA SUBRED ES:"+@CMDB_Subred+"\nEL TIPO DE RED ES:"+@CMDB_Tipo_Red+"\nEL ELEMENTO DE RED ES: "+@CMDB_Topologia);
+log ("\n NOMENCLATURA DE TICKET: " + dato);
+//Esta pol√≠tica est√° generada por el asistente de Impact.
 
-//Esta polÌtica est· generada por el asistente de Impact. 
-
-//Esta polÌtica se basa en el archivo WSDL en /opt/IBM/tivoli/impact/NetcoolIncident.wsdl
+//Esta pol√≠tica se basa en el archivo WSDL en /opt/IBM/tivoli/impact/NetcoolIncident.wsdl
 log("Incidente");
-log("Iniciar polÌtica 'Incidente'...");
+log("Iniciar pol√≠tica 'Incidente'...");
 //Especifique el nombre de paquete tal como se ha definido al compilar WSDL en Impact
 WSSetDefaultPKGName('NetcoolCrearIncidente');
 
-//Especificar par·metros
+//Especificar par√°metros
 CreateNetcoolIncidentRequestDocument=WSNewObject("com.hp.schemas.sm._7.CreateNetcoolIncidentRequestDocument");
 _CreateNetcoolIncidentRequest=WSNewSubObject(CreateNetcoolIncidentRequestDocument,"CreateNetcoolIncidentRequest");
 
@@ -123,13 +123,13 @@ _QuienReporta['StringValue'] = "RAMOSAS";
 
 WSParams = {CreateNetcoolIncidentRequestDocument};
 
-/*log("WSParams: " + WSParams + "\nReques: " + 
-CreateNetcoolIncidentRequest + "\n Document: " + 
-CreateNetcoolIncidentRequestDocument);*/ 
+/*log("WSParams: " + WSParams + "\nReques: " +
+CreateNetcoolIncidentRequest + "\n Document: " +
+CreateNetcoolIncidentRequestDocument);*/
 
 
 
-//Especifique un nombre de servicio web, un punto final y un mÈtodo
+//Especifique un nombre de servicio web, un punto final y un m√©todo
 WSService = 'NetcoolIncident';
 WSEndPoint = 'http://qcalswpr:13083/SM/7/ws';
 WSMethod = 'CreateNetcoolIncident';
@@ -149,18 +149,52 @@ log("Resultado devuelto de la llamada de servicio web CreateNetcoolIncident: " +
 
 //Se extrae el valor del numero de ticket
 ticket = RExtract(WSInvokeDLResult,".*<number type=.*>(.*)</number>.*");
+returnCode = RExtract(WSInvokeDLResult,'.*returnCode="([0-9]).*');
+ 
 log("El ticket es : " + ticket);
-if (ticket != ""){
+if (ticket == null && returnCode == 9){
+    Filter1="Serial="+serial; //Este es el serial del evento
+    log ("El serial del evento es: " +Filter1);
+    UpdateExpression="ImpactFlag = 201";
+    log ("El UPDATE EXPRESSION ES: "+UpdateExpression);
+    BatchUpdate('data', Filter1, UpdateExpression); //BatchUpdate sirve para actualizar el campo en el evento
+    log("FIN DE LA POLITICA NetcoolCreateIncident_A");
+
+   //ACTUALIZACION EN BITACORA
+   msj= fch +"|" + "Evento: " + serial + "|" + "Inicia proceso incidente en Service Manager" + "|" + "Error de comunicacion";
+   MyKey = serial +":"+ usr +":"+ fch;
+   MySQL = "insert into alerts.journal (KeyField,Serial,UID,Chrono,Text1) values('"+ MyKey +"',"+ serial +","+ usr +","+ fch + ",'"+msj+"')";
+   log ("El Query del Insert en alerts.journal es: "+MySQL);
+   DirectSQL(Source,MySQL,false);
+
+}
+
+if (JavaCall(null, ticket, "matches", {"^[A-Z]{2}-[0-9]{4}-[0-9]{6}$"})){
+
     Filter1="Serial="+serial; //Este es el serial del evento
     log ("El serial del evento es: " +Filter1);
     UpdateExpression="SMS_TicketNumber='"+ticket+"', TMX_Promote = 29";
     log ("El UPDATE EXPRESSION ES: "+UpdateExpression);
-    BatchUpdate('data', Filter1, UpdateExpression); //BatchUpdate sirve para actualizar el campo en el evento 
+    BatchUpdate('data', Filter1, UpdateExpression); //BatchUpdate sirve para actualizar el campo en el evento
     log("FIN DE LA POLITICA NetcoolCreateIncident_A");
 
    //ACTUALIZACION EN BITACORA
    msj= fch +"|" + "Evento: " + serial + "|" + "Inicia proceso incidente en Service Manager" + "|" + "Se genero exitosamente el insidente en SM" + "|" + "ID del incidente: " + ticket;
-   MyKey = serial +":"+ usr +":"+ fch; 
+   MyKey = serial +":"+ usr +":"+ fch;
+   MySQL = "insert into alerts.journal (KeyField,Serial,UID,Chrono,Text1) values('"+ MyKey +"',"+ serial +","+ usr +","+ fch + ",'"+msj+"')";
+   log ("El Query del Insert en alerts.journal es: "+MySQL);
+   DirectSQL(Source,MySQL,false);
+}else{
+    Filter1="Serial="+serial; //Este es el serial del evento
+    log ("El serial del evento es: " +Filter1);
+    UpdateExpression="ImpactFlag = 201";
+    log ("El UPDATE EXPRESSION ES: "+UpdateExpression);
+    BatchUpdate('data', Filter1, UpdateExpression); //BatchUpdate sirve para actualizar el campo en el evento
+    log("FIN DE LA POLITICA NetcoolCreateIncident_A");
+
+   //ACTUALIZACION EN BITACORA
+   msj= fch +"|" + "Evento: " + serial + "|" + "Inicia proceso incidente en Service Manager" + "|" + "Error de informacion enviada";
+   MyKey = serial +":"+ usr +":"+ fch;
    MySQL = "insert into alerts.journal (KeyField,Serial,UID,Chrono,Text1) values('"+ MyKey +"',"+ serial +","+ usr +","+ fch + ",'"+msj+"')";
    log ("El Query del Insert en alerts.journal es: "+MySQL);
    DirectSQL(Source,MySQL,false);
