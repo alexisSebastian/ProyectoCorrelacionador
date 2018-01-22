@@ -11,14 +11,14 @@ nodo = SUBSTRING(@TMX_NodeName, 0, 11);
 
 log("Primer indice del Nodo: " + nodo);
 
-//Esta polÌtica est· generada por el asistente de Impact. 
+//Esta pol√≠tica est√° generada por el asistente de Impact. 
 
-//Esta polÌtica se basa en el archivo WSDL en /opt/IBM/tivoli/impact/NetcoolDTCMDB_1.wsdl
+//Esta pol√≠tica se basa en el archivo WSDL en /opt/IBM/tivoli/impact/NetcoolDTCMDB_1.wsdl
 
 //Especifique el nombre de paquete tal como se ha definido al compilar WSDL en Impact
 WSSetDefaultPKGName('SM_DTCMDB');
 
-//Especificar par·metros
+//Especificar par√°metros
 RetrieveNetcoolDTCMDBRequestDocument=WSNewObject("com.hp.schemas.sm._7.RetrieveNetcoolDTCMDBRequestDocument");
 _RetrieveNetcoolDTCMDBRequest=WSNewSubObject(RetrieveNetcoolDTCMDBRequestDocument,"RetrieveNetcoolDTCMDBRequest");
 
@@ -32,7 +32,7 @@ _Instance = WSNewSubObject(_Model,"Instance");
  
 WSParams = {RetrieveNetcoolDTCMDBRequestDocument};
 
-//Especifique un nombre de servicio web, un punto final y un mÈtodo
+//Especifique un nombre de servicio web, un punto final y un m√©todo
 WSService = 'NetcoolDTCMDB';
 WSEndPoint = 'http://qcalswpr:13086/SM/7/ws';
 WSMethod = 'RetrieveNetcoolDTCMDB';
@@ -57,8 +57,9 @@ subRed = RExtract(WSInvokeDLResult,".*<subred type=.*>(.*)</subred>.*");
 tipoRed = RExtract(WSInvokeDLResult,".*<tipoRed type=.*>(.*)</tipoRed>.*");
 modelo = RExtract(WSInvokeDLResult,".*<modelo type=.*>(.*)</modelo>.*");
 elemetRed = RExtract(WSInvokeDLResult,".*<elementoRed type=.*>(.*)</elementoRed>.*");
+returnCode = RExtract(WSInvokeDLResult,'.*returnCode="([0-9]).*'); 
 
-log("CIID: "+CIId+"\n"+"ESTATUS: "+estatus+"\n"+"SubRed: "+subRed+"\n"+"TIPO RED: "+tipoRed+"\n"+"EL MODELO ES: "+ modelo+"\n"+"EL ELEMENTO DE RED ES: "+elemeRed);
+log("CIID: "+CIId+"\n"+"ESTATUS: "+estatus+"\n"+"SubRed: "+subRed+"\n"+"TIPO RED: "+tipoRed+"\n"+"EL MODELO ES: "+ modelo+"\n"+"EL ELEMENTO DE RED ES: "+elemetRed);
 
 //Validaciones
 if(CIId = NULL){CIId = "";}
@@ -84,17 +85,37 @@ if((CIId != "" && elemetRed != "" && estatus != "")|| (elementRed = "Equipo" && 
    log ("El Query del Insert en alerts.journal es: "+MySQL);
    DirectSQL(Source,MySQL,false);
 
-}
-elseif ((CIId = "" && elemetRed = "" && estatus = "")|| (elementRed = "Equipo" && estatus != "GESTIONADO") || (elementRed = "Enlaces" && estatus != "GESTIONADO") || (elementRed = "Servicio" && estatus != "LIBERADO") || (elementRed = "Servicio Cliente Final" && estatus != "En operacion") || (elementRed = "Puerto" && estatus != "OCUPADO") || (elementRed = "Tarjeta" && estatus != "GESTIONADO")) 
+}elseif ((CIId = "" && elemetRed = "" && estatus = "")|| (elementRed = "Equipo" && estatus != "GESTIONADO") || (elementRed = "Enlaces" && estatus != "GESTIONADO") || (elementRed = "Servicio" && estatus != "LIBERADO") || (elementRed = "Servicio Cliente Final" && estatus != "En operacion") || (elementRed = "Puerto" && estatus != "OCUPADO") || (elementRed = "Tarjeta" && estatus != "GESTIONADO")) 
 {
+  if (returnCode == 9) {
+    //Se actualiza en la tabla alerts.status
+    Filter1="Serial="+serial;
+    log ("El serial del evento es: " +Filter1);
+    UpdateExpression="ImpactFlag=201, TMX_Promote = 201";
+    log ("El UPDATE EXPRESSION ES: "+UpdateExpression);
+    BatchUpdate('data', Filter1, UpdateExpression);
 
-  //ACTUALIZACION EN BITACORA
+  //Se actualiza en la tabla alerts.jorunal
+   msj= fch +"|" + "Evento: " + serial + "|" + "No se encontro informacion" + "|" + "Sin informacin en la fuente de enriquecimiento";
+   MyKey = serial +":"+ usr +":"+ fch; 
+   MySQL = "insert into alerts.journal (KeyField,Serial,UID,Chrono,Text1) values('"+ MyKey +"',"+ serial +","+ usr +","+ fch + ",'"+msj+"')";
+   DirectSQL(Source,MySQL,false);
+   log ("El Query del Insert en alerts.journal es: "+MySQL);
+  }else{
+
+    Filter1="Serial="+serial;
+    log ("El serial del evento es: " +Filter1);
+    UpdateExpression="ImpactFlag=201, TMX_Promote = 0";
+    log ("El UPDATE EXPRESSION ES: "+UpdateExpression);
+    BatchUpdate('data', Filter1, UpdateExpression);
+
+
    msj= fch +"|" + "Evento: " + serial + "|" + "Enriquece evento" + "|" + "Informacion incompleta en la fuente de enriquecimiento";
    MyKey = serial +":"+ usr +":"+ fch; 
    MySQL = "insert into alerts.journal (KeyField,Serial,UID,Chrono,Text1) values('"+ MyKey +"',"+ serial +","+ usr +","+ fch + ",'"+msj+"')";
    log ("El Query del Insert en alerts.journal es: "+MySQL);
    DirectSQL(Source,MySQL,false);
+  }   
 }
-
 
 log("Fin de la politica NetcoolDTCMDB_A");

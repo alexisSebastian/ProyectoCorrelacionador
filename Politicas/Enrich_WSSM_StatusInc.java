@@ -32,9 +32,9 @@ if (Reporte == "") {
     WSListenerResult = NewObject();
     WSListenerResult.Reporte = "El reporte esta Vacio";
 }
-if (Estado != "Resuelto" || Estado != "Cancelado") {
+if (Estado != "Resuelto" && Estado = "Cancelado") {
     WSListenerResult = NewObject();
-    WSListenerResult.Reporte = "El estado es diferente del esperado";
+    WSListenerResult.Estado = "El estado es diferente al esperado";
 }
 if(Estado == "Resuelto" && Ticket >= "" && Reporte >= ""){
     WSListenerResult = NewObject();
@@ -56,6 +56,7 @@ if(Estado == "Resuelto" && Ticket >= "" && Reporte >= ""){
     WSListenerResult = NewObject();
     WSListenerResult.Estado="Estado recibido: " + Estado;
 
+<<<<<<< HEAD
     /*query = "select Serial from alerts.status where SMS_TicketNumber = '"+Ticket+"' ";
     CountOnly = False;
     log("El serial traido por el query es: " + query);
@@ -65,6 +66,11 @@ if(Estado == "Resuelto" && Ticket >= "" && Reporte >= ""){
     sql = DirectSQL(Source, "SELECT Serial FROM alerts.status WHERE SMS_TicketNumber = '"+Ticket+"'", False);
     serial = sql[0];
     log ("SERIAL: " + serial);
+=======
+    SQL = DirectSQL(Source, "SELECT Serial FROM alerts.status WHERE SMS_TicketNumber = '"+Ticket+"' and CMDB_Istatus = 'Cancelado'", False);
+    serial = SQL[0].Serial;
+    log("SERIAL: " + serial);
+>>>>>>> 4301bf4af9931041578434f130b4601698f922ad
   
     
     //Seactualiza el campo del evento en CMDB_Istatus a Cancelado 
