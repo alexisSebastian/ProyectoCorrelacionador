@@ -4,8 +4,11 @@ serial = @Serial;
 identificador = @Identifier;
 usr=0;
 fch=getdate();
+repisa = @TMX_ShelfNumber;
+puerto = @PhysicalPort;
+slot = @PhysicalSlot;
 Source="defaultobjectserver";
-log("\n"+"CLLI ES: "+ @TMX_NodeName+"\n" + "El SERIAL ES:"+@Serial+"\n");
+log("\n"+"CLLI ES: "+ @TMX_NodeName+"\n" + "El SERIAL ES:"+@Serial+"\n" + "\nLa repisa es: " +repisa +"\El puerto es: " + puerto + "\nEl slot es: " + slot);
 
 nodo = SUBSTRING(@TMX_NodeName, 0, 11);
 
@@ -27,7 +30,8 @@ _Model = WSNewSubObject(_RetrieveNetcoolDTCMDBRequest,"Model");
 
 
 _Keys = WSNewSubObject(_Model,"Keys");
-_Keys['Query'] = 'display.name="'+nodo+'"'; //Agregar la variable del nodo
+//_Keys['Query'] = 'display.name="'+nodo+'" + || + "'+repisa+'" + || + "'+puerto+'" + || + "'+slot'"'; //Agregar la variable del nodo
+_Keys['Query'] = 'display.name="'+nodo+'"+"/"+"'+repisa+'"+"/"+"'+puerto+'"+"/"+"'+slot+'"';
 _Instance = WSNewSubObject(_Model,"Instance");
  
 WSParams = {RetrieveNetcoolDTCMDBRequestDocument};
