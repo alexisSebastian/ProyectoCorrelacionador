@@ -20,16 +20,6 @@ cancel = "Cancelado";
 
 log("El estado es: " + Estado + "\nEl numero de ticket es: " + Ticket + "\nEl nombre de quien reporta es: " + Reporte);
 
-/*
-Validaciones para los estados de resuelto y cancelado
-1.- Flujo basico el estado glbal cambia a RESUELTO y se elimina el evento *
-2.-Flujo alterno 1  no se registra la solucion apartir del evento, el id del incidente se registra en el diario y se debe eliminar del id de incidente para 
-volver a ser candidato a incidente y realizar de nuevo la peticion a sm, el operador al detectar que el evento termino satisfactoriamente pero continua 
-el analista vuelve a solicitar el proceso a partir del mismo evento, la politica registra la solicitud manual y el usuario que solicito el proceso.
-
-3.- si el evento es cancelado se registra el id del incidente, se elimina el id del incidente y vuelve a ser candidato.
-*/
-
 if(Ticket == ""){
     WSListenerResult = NewObject();
     WSListenerResult.Ticket = "El Ticket esta Vacio";
@@ -66,9 +56,21 @@ if(Estado == "Resuelto" && Ticket >= "" && Reporte >= ""){
     WSListenerResult = NewObject();
     WSListenerResult.Estado="Estado recibido: " + Estado;
 
+<<<<<<< HEAD
+    /*query = "select Serial from alerts.status where SMS_TicketNumber = '"+Ticket+"' ";
+    CountOnly = False;
+    log("El serial traido por el query es: " + query);
+    serialResult = DirectSQL(Source,query,CountOnly);
+    log("El serial traido por el query es: " + serialResult);*/
+
+    sql = DirectSQL(Source, "SELECT Serial FROM alerts.status WHERE SMS_TicketNumber = '"+Ticket+"'", False);
+    serial = sql[0];
+    log ("SERIAL: " + serial);
+=======
     SQL = DirectSQL(Source, "SELECT Serial FROM alerts.status WHERE SMS_TicketNumber = '"+Ticket+"' and CMDB_Istatus = 'Cancelado'", False);
     serial = SQL[0].Serial;
     log("SERIAL: " + serial);
+>>>>>>> 4301bf4af9931041578434f130b4601698f922ad
   
     
     //Seactualiza el campo del evento en CMDB_Istatus a Cancelado 
