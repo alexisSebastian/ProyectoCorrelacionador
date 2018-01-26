@@ -167,9 +167,22 @@ if (ticket == null && returnCode == 9){
    log ("El Query del Insert en alerts.journal es: "+MySQL);
    DirectSQL(Source,MySQL,false);
 
-}
+}elseif(CMDB_Logical_Name == '' || CMDB_Istatus == '' || CMDB_Subred == '' || CMDB_Tipo_Red == '' ||  CMDB_Model == '' || CMDB_Topologia == ''){
+    
+    Filter1="Serial="+serial; //Este es el serial del evento
+    log ("El serial del evento es: " +Filter1);
+    UpdateExpression="ImpactFlag = 201";
+    log ("El UPDATE EXPRESSION ES: "+UpdateExpression);
+    BatchUpdate('data', Filter1, UpdateExpression); //BatchUpdate sirve para actualizar el campo en el evento
+    log("FIN DE LA POLITICA NetcoolCreateIncident_A");
+    //ACTUALIZACION EN BITACORA
+   msj= fch +"|" + "Evento: " + serial + "|" + "Enriquece evento para incidente" + "|" + "Informacion incompleta en la fuente de enriquecimiento";
+   MyKey = serial +":"+ usr +":"+ fch;
+   MySQL = "insert into alerts.journal (KeyField,Serial,UID,Chrono,Text1) values('"+ MyKey +"',"+ serial +","+ usr +","+ fch + ",'"+msj+"')";
+   log ("El Query del Insert en alerts.journal es: "+MySQL);
+   DirectSQL(Source,MySQL,false);
 
-if (JavaCall(null, ticket, "matches", {"^[A-Z]{2}-[0-9]{4}-[0-9]{6}$"})){
+}elseif (JavaCall(null, ticket, "matches", {"^[A-Z]{2}-[0-9]{4}-[0-9]{6}$"})){
 
     Filter1="Serial="+serial; //Este es el serial del evento
     log ("El serial del evento es: " +Filter1);
