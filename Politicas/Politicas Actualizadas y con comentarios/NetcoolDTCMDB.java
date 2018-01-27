@@ -76,8 +76,9 @@ returnCode = RExtract(WSInvokeDLResult,'.*returnCode="([0-9]).*');
 log("CIID: "+ciid+"\n"+"ESTATUS: "+estatus+"\n"+"SubRed: "+subRed+"\n"+"TIPO RED: "+tipoRed+"\n"+"EL MODELO ES: "+ modelo+"\n"+"EL ELEMENTO DE RED ES: "+elemetRed);
 
 /***Se realizan las validaciones***/
+/**Se valida que los elemntos de res sean los esperados al igual que su estatus */
 if ((elementRed = "Equipo" && estatus = "GESTIONADO") || (elementRed = "Enlaces" && estatus = "GESTIONADO") || (elementRed = "Servicio" && estatus = "LIBERADO") || (elementRed = "Servicio Cliente Final" && estatus = "En operacion") || (elementRed = "Puerto" && estatus = "OCUPADO") || (elementRed = "Tarjeta" && estatus = "GESTIONADO")){
-
+    /**Para los elementos de red tipo equipo y que sean gestionados  */
     if (elementoRed "Equipo" && estatus = "GESTIONADO"){
         if (ciid != "" && modelo != "" && elementRed != "" && estatus != "" && subRed != "" && tipoRed != ""){
             Filter1="Serial="+serial; //Este es el serial del evento
