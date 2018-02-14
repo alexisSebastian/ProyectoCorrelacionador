@@ -15,7 +15,7 @@ _Model = WSNewSubObject(_UpdateNetcoolIncidentRequest,"Model");
 _Keys = WSNewSubObject(_Model,"Keys");
 
 _Number = WSNewSubObject(_Keys,"Number");
-_Number['StringValue'] = "IN-1801-000222";
+_Number['StringValue'] = @SMS_TicketNumber;
 
 _Instance = WSNewSubObject(_Model,"Instance");
 
