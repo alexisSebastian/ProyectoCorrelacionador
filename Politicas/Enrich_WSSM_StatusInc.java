@@ -13,7 +13,7 @@ log("Enrich_WSSM_StatusInc");
 log("****Enrich_WSSM_StatusInc*****");
 usr=0;
 fch=getdate();
-serial = @Serial;
+//serial = @Serial;
 Source="defaultobjectserver";
 result = "Resuelto";
 cancel = "Cancelado";
@@ -54,17 +54,16 @@ if(Estado == "Resuelto" && Ticket != "" && Reporte != ""){
     log("ESTADOS: " + Estado + Ticket + Reporte);
 
 
-    SQL = DirectSQL(Source, "SELECT Serial FROM alerts.status WHERE SMS_TicketNumber = '"+Ticket+"' and CMDB_Istatus = 'Resuelto'", False);
+    SQL = DirectSQL(Source, "SELECT Serial FROM alerts.status WHERE SMS_TicketNumber = '"+Ticket+"'", False);
     serial = SQL[0].Serial;
     log("SERIAL: " + serial);
 
     Filter1="SMS_TicketNumber='"+Ticket+"'";
     log("SERIAL: " + Filter1);
-    UpdateExpression="CMDB_Istatus = '"+Estado+"'";
+    UpdateExpression="CMDB_Istatus = '"+Estado+"', TMX_Promote = 30";
     log("UPDATEExpression: " + UpdateExpression);
     BatchUpdate('data', Filter1, UpdateExpression);
 
-//ACTUALIZACION EN BITACORA se necesita modificar la politica
    msj = fch + "|" + "Estado del incidente: " + Estado + "|" + "El estado fue Resuelto" + "|" + "El id de incidente es: " + Ticket;
    log("El mensaje es :" + msj);
    MyKey = serial +":"+ usr +":"+ fch;
@@ -72,26 +71,8 @@ if(Estado == "Resuelto" && Ticket != "" && Reporte != ""){
    MySQL = "insert into alerts.journal (KeyField,Serial,UID,Chrono,Text1) values('"+ MyKey +"',"+ serial +","+ usr +","+ fch + ",'"+msj+"')";
    log ("El Query del Insert en alerts.journal es: "+MySQL);
    DirectSQL(Source,MySQL,false);
-
  
-    //Seactualiza el campo del evento en CMDB_Istatus a Resuelto 
-    /*Filter1="SMS_TicketNumber='"+Ticket+"'";
-    log("SERIAL: " + Filter1);
-    UpdateExpression="CMDB_Istatus = '"+Estado+"'";
-    log("UPDATEExpression: " + UpdateExpression);
-    BatchUpdate('data', Filter1, UpdateExpression);
-    log("FIN DE LA POLITICA NetcoolCreateIncident_A");*/
-
-     //ACTUALIZACION EN BITACORA se necesita modificar la politica
-    /*msj = fch + "|" + "Estado del incidente: " + Estado + "|" + "El estado fue Resuelto" + "|" + "El id de incidente es: " + Ticket;
-    log("El mensaje es :" + msj);
-    MyKey = serial +":"+ usr +":"+ fch;
-    log("La key es: " + MyKey); 
-    MySQL = "insert into alerts.journal (KeyField,Serial,UID,Chrono,Text1) values('"+ MyKey +"',"+ serial +","+ usr +","+ fch + ",'"+msj+"')";
-    log ("El Query del Insert en alerts.journal es: "+MySQL);
-    DirectSQL(Source,MySQL,false);*/
-  
-
+   log("FIN DE LA POLITICA NetcoolCreateIncident_A");
 
 } elseif (Estado == "Cancelado"){
     WSListenerResult = NewObject();
@@ -102,11 +83,6 @@ if(Estado == "Resuelto" && Ticket != "" && Reporte != ""){
     log("El serial traido por el query es: " + query);
     serialResult = DirectSQL(Source,query,CountOnly);
     log("El serial traido por el query es: " + serialResult);*/
-
-    SQL = DirectSQL(Source, "SELECT Serial FROM alerts.status WHERE SMS_TicketNumber = '"+Ticket+"' and CMDB_Istatus = 'Cancelado'", False);
-    serial = SQL[0].Serial;
-    log("SERIAL: " + serial);
-  
     
     //Seactualiza el campo del evento en CMDB_Istatus a Cancelado 
     Filter1="SMS_TicketNumber='"+Ticket+"'";
@@ -114,6 +90,11 @@ if(Estado == "Resuelto" && Ticket != "" && Reporte != ""){
     UpdateExpression="CMDB_Istatus = '"+Estado+"', SMS_TicketNumber = '', TMX_Promote = 26";
     log("UPDATEExpression: " + UpdateExpression);
     BatchUpdate('data', Filter1, UpdateExpression);
+
+    SQL = DirectSQL(Source, "SELECT Serial FROM alerts.status WHERE SMS_TicketNumber = '"+Ticket+"'", False);
+    log("SQL: " + SQL);    
+    serial = SQL[0].Serial;
+    log("SERIAL: " + serial);
     
 
     //ACTUALIZACION EN BITACORA se necesita modificar la politica

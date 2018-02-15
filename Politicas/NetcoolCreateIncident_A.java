@@ -1,4 +1,5 @@
-log("NetcoolCreateIncident_A");
+log("NetcoolCreateIncident_");
+
 
 //CAMPOS PARA SACAR LOS DATOS PARA LA CONSULTA
 ciid = @CMDB_Logical_Name;
@@ -19,15 +20,19 @@ tipoRed = @CMDB_Tipo_Red;
 elemetoRed = @CMDB_Topologia;
 usr=0;
 fch=getdate();
+usuario = @ONUID;
 Source="defaultobjectserver";
 
-log("\nCIID ES: "+@CMDB_Logical_Name+"\nEL SERIAL ES: "+@Serial+"\nEL CLLI ES: "+@TMX_NodeName+"\nEL PROMOTE ES: " +@TMX_Promote+"\nEL AlertKey ES: "+@AlertKey+"\nTALLY: "+@Tally+"\nLastOcurrence ES: "+@LastOccurrence+"\nEl ESTATUS ES: "+@CMDB_Istatus+"\nEl AlertGroup ES: "+@AlertGroup+"\nLa REFERENCIA SISA ES: "+@TMX_Reference+"\nLA SUBRED ES:"+@CMDB_Subred+"\nEL TIPO DE RED ES:"+@CMDB_Tipo_Red+"\nEL ELEMENTO DE RED ES: "+@CMDB_Topologia);
+
+log("\nCIID ES: "+@CMDB_Logical_Name+"\nEL SERIAL ES: "+@Serial+"\nEL CLLI ES: "+@TMX_NodeName+"\nEL PROMOTE ES: " +@TMX_Promote+"\nEL AlertKey ES: "+@AlertKey+"\nTALLY: "+@Tally+"\nLastOcurrence ES: "+@LastOccurrence+"\nEl ESTATUS ES: "+@CMDB_Istatus+"\nEl AlertGroup ES: "+@AlertGroup+"\nLa REFERENCIA SISA ES: "+@TMX_Reference+"\nLA SUBRED ES:"+@CMDB_Subred+"\nEL TIPO DE RED ES:"+@CMDB_Tipo_Red+"\nEL ELEMENTO DE RED ES: "+@CMDB_Topologia+"\Usuario :"+@ONUID);
 log ("\n NOMENCLATURA DE TICKET: " + dato);
 //Esta política está generada por el asistente de Impact.
 
 //Esta política se basa en el archivo WSDL en /opt/IBM/tivoli/impact/NetcoolIncident.wsdl
-log("Incidente");
-log("Iniciar política 'Incidente'...");
+log("Incidente"); 
+  
+
+log("Iniciar política 'NetcoolCreateIncident_'...");
 //Especifique el nombre de paquete tal como se ha definido al compilar WSDL en Impact
 WSSetDefaultPKGName('NetcoolCrearIncidente');
 
@@ -40,6 +45,8 @@ _Model = WSNewSubObject(_CreateNetcoolIncidentRequest,"Model");
 
 _Keys = WSNewSubObject(_Model,"Keys");
 _Keys['Query'] = "";
+
+_Number = WSNewSubObject(_Keys,"Number");
 
 _Instance = WSNewSubObject(_Model,"Instance");
 
@@ -54,7 +61,7 @@ _Prioridad = WSNewSubObject(_Instance,"Prioridad");
 _Prioridad['StringValue'] = "Menor";
 
 _CiAfectado = WSNewSubObject(_Instance,"CiAfectado");
-_CiAfectado['StringValue'] = @TMX_NodeName;
+_CiAfectado['StringValue'] = @CMDB_Logical_Name;
 
 _SintomasReportados = WSNewSubObject(_Instance,"SintomasReportados");
 
@@ -117,17 +124,17 @@ _CantidadQuejas['StringValue'] = "0";
 _CantidadVideoCamAfectadas = WSNewSubObject(_Instance,"CantidadVideoCamAfectadas");
 _CantidadVideoCamAfectadas['StringValue'] = "0";
 
+_BanderaCierre = WSNewSubObject(_Instance,"BanderaCierre");
+_BanderaCierre['StringValue'] = "";
+
 _QuienReporta = WSNewSubObject(_Instance,"QuienReporta");
-_QuienReporta['StringValue'] = "RAMOSAS";
+_QuienReporta['StringValue'] = @OwnerUID;
 
 
 WSParams = {CreateNetcoolIncidentRequestDocument};
 
-/*log("WSParams: " + WSParams + "\nReques: " +
-CreateNetcoolIncidentRequest + "\n Document: " +
-CreateNetcoolIncidentRequestDocument);*/
 
-
+log(WSParams);
 
 //Especifique un nombre de servicio web, un punto final y un método
 WSService = 'NetcoolIncident';
@@ -167,22 +174,9 @@ if (ticket == null && returnCode == 9){
    log ("El Query del Insert en alerts.journal es: "+MySQL);
    DirectSQL(Source,MySQL,false);
 
-}elseif(CMDB_Logical_Name == '' || CMDB_Istatus == '' || CMDB_Subred == '' || CMDB_Tipo_Red == '' ||  CMDB_Model == '' || CMDB_Topologia == ''){
-    
-    Filter1="Serial="+serial; //Este es el serial del evento
-    log ("El serial del evento es: " +Filter1);
-    UpdateExpression="ImpactFlag = 201";
-    log ("El UPDATE EXPRESSION ES: "+UpdateExpression);
-    BatchUpdate('data', Filter1, UpdateExpression); //BatchUpdate sirve para actualizar el campo en el evento
-    log("FIN DE LA POLITICA NetcoolCreateIncident_A");
-    //ACTUALIZACION EN BITACORA
-   msj= fch +"|" + "Evento: " + serial + "|" + "Enriquece evento para incidente" + "|" + "Informacion incompleta en la fuente de enriquecimiento";
-   MyKey = serial +":"+ usr +":"+ fch;
-   MySQL = "insert into alerts.journal (KeyField,Serial,UID,Chrono,Text1) values('"+ MyKey +"',"+ serial +","+ usr +","+ fch + ",'"+msj+"')";
-   log ("El Query del Insert en alerts.journal es: "+MySQL);
-   DirectSQL(Source,MySQL,false);
+}
 
-}elseif (JavaCall(null, ticket, "matches", {"^[A-Z]{2}-[0-9]{4}-[0-9]{6}$"})){
+if (JavaCall(null, ticket, "matches", {"^[A-Z]{2}-[0-9]{4}-[0-9]{6}$"})){
 
     Filter1="Serial="+serial; //Este es el serial del evento
     log ("El serial del evento es: " +Filter1);
@@ -211,4 +205,4 @@ if (ticket == null && returnCode == 9){
    MySQL = "insert into alerts.journal (KeyField,Serial,UID,Chrono,Text1) values('"+ MyKey +"',"+ serial +","+ usr +","+ fch + ",'"+msj+"')";
    log ("El Query del Insert en alerts.journal es: "+MySQL);
    DirectSQL(Source,MySQL,false);
-}
+} 

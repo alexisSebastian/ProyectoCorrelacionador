@@ -1,4 +1,5 @@
-log("NetcoolDTCambios_");//Se asignan los valores del servicio de A variables
+log("NetcoolDTCambios_");
+
 ciid = @CMDB_Logical_Name;
 serial = @Serial;
 identificador = @Identifier;
@@ -10,17 +11,18 @@ tmxPromote = @TMX_Promote;
 tally = @Tally;
 usr=0;
 fch=getdate();
-Source="defaultobjectserver";
+SourceA="defaultobjectserver";
 
 log("\n\n\nCMDB_Logical_Name: " + @CMDB_Logical_Name + "\nserial: " + @Serial + "\nServerName: "+ @ServerName + "\nServerSerial:" +@ServerSerial+"\nStateChange: " +@StateChange+"\nTMX_NodeName: "+@TMX_NodeName+"\nTMX_Promote: "+@TMX_Promote+"\nTALLY: "+@Tally);
 
-//Esta política está generada por el asistente de Impact. 
+/Esta política está generada por el asistente de Impact. 
 
 //Esta política se basa en el archivo WSDL en /opt/IBM/tivoli/impact/NDTCambios.wsdl
 
 log("Iniciar política 'NetcoolDTCambios_'...");
 //Especifique el nombre de paquete tal como se ha definido al compilar WSDL en Impact
 WSSetDefaultPKGName('NetcoolDTCambios');
+
 
 //Especificar parámetros
 RetrieveNetcoolDTCambiosListRequestDocument=WSNewObject("com.hp.schemas.sm._7.RetrieveNetcoolDTCambiosListRequestDocument");
@@ -55,7 +57,7 @@ WSInvokeDLResult = WSInvokeDL(WSService, WSEndPoint, WSMethod, WSParams, callPro
 log("Resultado devuelto de la llamada de servicio web RetrieveNetcoolDTCambiosList: " +WSInvokeDLResult);
 
 returnCode = RExtract(WSInvokeDLResult,'.*returnCode="([0-9]).*');
- 
+
 if(returnCode = 9){
     Filter1="Serial="+serial; //Este es el serial del evento
     log ("El serial del evento es: " +Filter1);
@@ -88,4 +90,3 @@ elseif(returnCode = 0){
     log ("El Query del Insert en alerts.journal es: "+MySQL);
     DirectSQL(Source,MySQL,false); 
 }
- 

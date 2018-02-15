@@ -1,7 +1,9 @@
-log("TestUpdate");
+log("UpdateStatus");
+//Esta política está generada por el asistente de Impact. 
 
-idIncidente = @SMS_TicketNumber;
-log("Iniciar política 'TestUpdate'...");
+//Esta política se basa en el archivo WSDL en /opt/IBM/tivoli/impact/NetcoolIncidentOficial.wsdl
+
+log("Iniciar política 'UpdateStatus'...");
 //Especifique el nombre de paquete tal como se ha definido al compilar WSDL en Impact
 WSSetDefaultPKGName('NetcoolCrearIncidente');
 
@@ -15,12 +17,17 @@ _Model = WSNewSubObject(_UpdateNetcoolIncidentRequest,"Model");
 _Keys = WSNewSubObject(_Model,"Keys");
 
 _Number = WSNewSubObject(_Keys,"Number");
-_Number['StringValue'] = @SMS_TicketNumber;
+_Number['StringValue'] = "IN-1802-000099";
 
 _Instance = WSNewSubObject(_Model,"Instance");
 
-_Estado = WSNewSubObject(_Instance,"Estado");
-_Estado['StringValue'] = "Restaurado";
+//_FechaRegistro = WSNewSubObject(_Instance,"FechaRegistro");
+
+_EstadoGlobal = WSNewSubObject(_Instance,"EstadoGlobal");
+_EstadoGlobal['StringValue'] = "Restaurado";
+
+_BanderaCierre = WSNewSubObject(_Instance,"BanderaCierre");
+_BanderaCierre['StringValue'] = "0";
 
 
 WSParams = {UpdateNetcoolIncidentRequestDocument};
@@ -38,7 +45,6 @@ callProps.Password="netcooldt";
 callProps.ReuseHttpClient = false;
 callProps.KeepAlive = false;
 callProps.CloseConnection=true;
-
 
 log("Se va a invocar la llamada de servicio web UpdateNetcoolIncident ......");
 
