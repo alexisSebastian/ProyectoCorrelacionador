@@ -12,6 +12,8 @@ tally = @Tally;
 usr=0;
 fch=getdate();
 SourceA="defaultobjectserver";
+SoureceB = "CNSBADP";
+SourceD = "CNSDESA";
 
 log("\n\n\nCMDB_Logical_Name: " + @CMDB_Logical_Name + "\nserial: " + @Serial + "\nServerName: "+ @ServerName + "\nServerSerial:" +@ServerSerial+"\nStateChange: " +@StateChange+"\nTMX_NodeName: "+@TMX_NodeName+"\nTMX_Promote: "+@TMX_Promote+"\nTALLY: "+@Tally);
 

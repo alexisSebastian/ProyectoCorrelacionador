@@ -6,10 +6,15 @@ serial = @Serial;
 identificador = @Identifier;
 usr=0;
 fch=getdate();
-Source="defaultobjectserver";
 repisa = "0" + @TMX_ShelfNumber;
 puerto = "0" + @PhysicalPort;
 slot = "0" +  @PhysicalSlot;
+Source="defaultobjectserver";
+SoureceB = "CNSBADP";
+SourceD = "CNSDESA";
+
+
+
 log("\n"+"CLLI ES: "+ @TMX_NodeName+"\n" + "El SERIAL ES:"+@Serial+"\nLa repisa es: "+@TMX_ShelfNumber+" \nEl puerto es: "+ @PhysicalPort + "\nEl slot es: "+ @PhysicalSlot +"\nEl servidor es: "+ @ServerName);
 
 
@@ -129,7 +134,7 @@ if (Length(clli) == 11) {
             DirectSQL(Source,MySQL,false);
         }
     }
-} else{
+} elseif (Length(clli) > 11){ //ELSEIF PARA VALIDAR QUE LA LONGITUD DEBE SER MAYIOR A 11
     log("Iniciar política 'NetcoolDTCMDB_'...");
     //Especifique el nombre de paquete tal como se ha definido al compilar WSDL en Impact
     WSSetDefaultPKGName('NetcoolDTCMDB');
