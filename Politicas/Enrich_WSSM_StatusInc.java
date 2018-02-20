@@ -71,7 +71,7 @@ if(Estado == "Resuelto" && Ticket != "" && Reporte != ""){
    MySQL = "insert into alerts.journal (KeyField,Serial,UID,Chrono,Text1) values('"+ MyKey +"',"+ serial +","+ usr +","+ fch + ",'"+msj+"')";
    log ("El Query del Insert en alerts.journal es: "+MySQL);
    DirectSQL(Source,MySQL,false);
- 
+   
    log("FIN DE LA POLITICA NetcoolCreateIncident_A");
 
 } elseif (Estado == "Cancelado"){

@@ -1,3 +1,5 @@
+ticket = @SMS_TicketNumber;
+
 log("UpdateStatus");
 //Esta política está generada por el asistente de Impact. 
 
@@ -6,6 +8,7 @@ log("UpdateStatus");
 log("Iniciar política 'UpdateStatus'...");
 //Especifique el nombre de paquete tal como se ha definido al compilar WSDL en Impact
 WSSetDefaultPKGName('NetcoolCrearIncidente');
+
 
 //Especificar parámetros
 UpdateNetcoolIncidentRequestDocument=WSNewObject("com.hp.schemas.sm._7.UpdateNetcoolIncidentRequestDocument");
@@ -17,7 +20,7 @@ _Model = WSNewSubObject(_UpdateNetcoolIncidentRequest,"Model");
 _Keys = WSNewSubObject(_Model,"Keys");
 
 _Number = WSNewSubObject(_Keys,"Number");
-_Number['StringValue'] = "IN-1802-000099";
+_Number['StringValue'] = "'+ticket+'";
 
 _Instance = WSNewSubObject(_Model,"Instance");
 
@@ -50,3 +53,4 @@ log("Se va a invocar la llamada de servicio web UpdateNetcoolIncident ......");
 
 WSInvokeDLResult = WSInvokeDL(WSService, WSEndPoint, WSMethod, WSParams, callProps);
 log("Resultado devuelto de la llamada de servicio web UpdateNetcoolIncident: " +WSInvokeDLResult);
+
