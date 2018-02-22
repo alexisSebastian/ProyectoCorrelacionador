@@ -60,6 +60,14 @@ log("Iniciar política 'NetcoolDTCMDB_'...");
     }elseif(Length(clli) > 11 && subSlot > 00){
         _Keys['Query'] = 'display.name= "'+clli+''+'/'+''+repisa+''+'/'+slot+''+'/'+subSlot+''+'/'+puerto+'"'; //PUERTO
     }
+
+    /**
+     * TODO:
+     * realizar validacion para los enlaces
+     * 
+     * 
+     * */
+
     _CIID = WSNewSubObject(_Keys,"CIID");
 
     _Instance = WSNewSubObject(_Model,"Instance");
