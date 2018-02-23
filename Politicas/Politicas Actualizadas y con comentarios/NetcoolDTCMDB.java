@@ -7,7 +7,7 @@ identificador = @Identifier;
 usr=0;
 fch=getdate();
 repisa = "0" + @TMX_ShelfNumber; 
-//puerto = "0" + @PhysicalPort;
+puerto =  @PhysicalPort;
 //slot = "0" +  @PhysicalSlot;
 //subSlot = "0" + @TMX_SubInterface;
 
@@ -23,11 +23,11 @@ if (@TMX_SubInterface > 9) {
     subSlot = "0" + @TMX_SubInterface;
 }
 
-if (@PhysicalPort > 9) {
+/*if (@PhysicalPort > 9) {
     puerto = @PhysicalPort;
 }else{
     puerto = "0" + @PhysicalPort;
-}
+}*/
 tarjeta = "0" + @PhysicalCard;
 Source="defaultobjectserver";
 SoureceB = "CNSBADP";
@@ -51,13 +51,13 @@ log("Iniciar política 'NetcoolDTCMDB_'...");
     _Model = WSNewSubObject(_RetrieveNetcoolDTCMDBRequest,"Model");
 
     _Keys = WSNewSubObject(_Model,"Keys"); 
-    if (Length(clli) == 11) {
+    if (Length(clli) == 11 && ) {
         _Keys['Query'] = 'display.name="'+clli+'"'; //EQUIPO
 
     }elseif(Length(clli) > 11 && tarjeta > 00 && tarjeta != ''){ 
-        _Keys['Query'] = 'display.name= "'+clli+''+'/'+''+repisa+''+'/'+slot+''+'/'+puerto+'"'; //TARJETA
+        _Keys['Query'] = 'display.name= "'+clli+''+'/'+''+repisa+''+'/'+slot+''+'/'+subSlot+'"'; //TARJETA
     
-    }elseif(Length(clli) > 11 && subSlot > 00){
+    }elseif(Length(clli) > 11 && puerto > 00){
         _Keys['Query'] = 'display.name= "'+clli+''+'/'+''+repisa+''+'/'+slot+''+'/'+subSlot+''+'/'+puerto+'"'; //PUERTO
     }
 

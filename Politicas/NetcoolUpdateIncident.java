@@ -4,19 +4,30 @@ log("NetcoolUpdateStatusByClareo");
  * 
  * Realizar validacion para que la politica espere 5 minutos antes de mandar la notificacín para clarear evente
  */
-ultimaOcurrencia = @LastOcurrence;
-fechActual = GetDate();
+fchClareo = @FirstOcurrence;
 tiempo = 300;
 ticket = @SMS_TicketNumber;
 nodo = @TMX_NodeName;
 serial = @Serial;
-umbral = fechActual - ultimaOcurrencia;
+diferencia = GetDate() - fchClareo;
+
+/**
+ * VARIABLES PARA PRUEBAS
+ * 
+ * ultima = 1516914814;
+ * fechActual = GetDate();
+ * tiempo = 300;
+ * ticket = "IN-1802-0001";
+ * nodo = "ACPLXGBAO01-AGR1-7450";
+ * serial = 90925260;
+ */
 log("Tiempo definido en umbral es:" + LocalTime(tiempo,"HH:mm:ss"));
 log("\nEl tiempo del transcurrido del umbral es: " + LocalTime(umbral, "HH:mm:ss"));
 
 if (JavaCall(null, ticket, "matches", {"^[A-Z]{2}-[0-9]{4}-[0-9]{6}$"})) {
-    if (umbral >= tiempo) {
-        //Esta política está generada por el asistente de Impact. 
+    if(diferencia >= tiempo){
+        log("El ticket tiene la nomenclatura correcta");
+         //Esta política está generada por el asistente de Impact. 
     
         //Esta política se basa en el archivo WSDL en /opt/IBM/tivoli/impact/NetcoolIncidentOficial.wsdl
     
@@ -63,6 +74,7 @@ if (JavaCall(null, ticket, "matches", {"^[A-Z]{2}-[0-9]{4}-[0-9]{6}$"})) {
         callProps.ReuseHttpClient = false;
         callProps.KeepAlive = false;
         callProps.CloseConnection=true;
+        callProps.Timeout=1200000;
     
         log("Se va a invocar la llamada de servicio web UpdateNetcoolIncident ......");
     
@@ -82,6 +94,10 @@ if (JavaCall(null, ticket, "matches", {"^[A-Z]{2}-[0-9]{4}-[0-9]{6}$"})) {
         MySQL = "insert into alerts.journal (KeyField,Serial,UID,Chrono,Text1) values('"+ MyKey +"',"+ serial +","+ usr +","+ fch + ",'"+msj+"')";
         log ("El Query del Insert en alerts.journal es: "+MySQL);
         DirectSQL(Source,MySQL,false);
+    }else{
+        log("algo esta fallando");
+    }
     
-    }       
+}else{
+    log("el ticket no coincide")
 }
