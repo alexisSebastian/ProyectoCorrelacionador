@@ -4,25 +4,24 @@ log("NetcoolUpdateStatusByClareo");
  * 
  * Realizar validacion para que la politica espere 5 minutos antes de mandar la notificacín para clarear evente
  */
-fchClareo = @FirstOcurrence;
+/*fchClareo = @FirstOcurrence;
 tiempo = 300;
 ticket = @SMS_TicketNumber;
 nodo = @TMX_NodeName;
 serial = @Serial;
-diferencia = GetDate() - fchClareo;
+diferencia = GetDate()-fchClareo;*/
 
-/**
- * VARIABLES PARA PRUEBAS
- * 
- * ultima = 1516914814;
- * fechActual = GetDate();
- * tiempo = 300;
- * ticket = "IN-1802-0001";
- * nodo = "ACPLXGBAO01-AGR1-7450";
- * serial = 90925260;
- */
+
+  //VARIABLES PARA PRUEBAS
+  
+  fchClareo = 1519340189;
+  tiempo = 300;
+  ticket = "IN-1802-000118";
+  serial = 91510055;
+  diferencia = GetDate()-fchClareo;
+ 
 log("Tiempo definido en umbral es:" + LocalTime(tiempo,"HH:mm:ss"));
-log("\nEl tiempo del transcurrido del umbral es: " + LocalTime(umbral, "HH:mm:ss"));
+log("\nEl tiempo transcurrido del umbral es: " + LocalTime(diferencia, "HH:mm:ss"));
 
 if (JavaCall(null, ticket, "matches", {"^[A-Z]{2}-[0-9]{4}-[0-9]{6}$"})) {
     if(diferencia >= tiempo){
@@ -46,7 +45,8 @@ if (JavaCall(null, ticket, "matches", {"^[A-Z]{2}-[0-9]{4}-[0-9]{6}$"})) {
         _Keys = WSNewSubObject(_Model,"Keys");
     
         _Number = WSNewSubObject(_Keys,"Number");
-        _Number['StringValue'] = "@SMS_TicketNumber";
+        //_Number['StringValue'] = "@SMS_TicketNumber";
+        _Number['StringValue'] = ticket; 
     
         _Instance = WSNewSubObject(_Model,"Instance");
     
@@ -77,27 +77,27 @@ if (JavaCall(null, ticket, "matches", {"^[A-Z]{2}-[0-9]{4}-[0-9]{6}$"})) {
         callProps.Timeout=1200000;
     
         log("Se va a invocar la llamada de servicio web UpdateNetcoolIncident ......");
-        
+    
         WSInvokeDLResult = WSInvokeDL(WSService, WSEndPoint, WSMethod, WSParams, callProps);
         log("Resultado devuelto de la llamada de servicio web UpdateNetcoolIncident: " +WSInvokeDLResult);
     
-        Filter1="Serial="+serial; //Este es el serial del evento
+        /*Filter1="Serial="+serial; Este es el serial del evento
         log ("El serial del evento es: " +Filter1);
         UpdateExpression="TMX_Promote = 31";
         log("VALOR DE TMX_PROMOTE ANTES DE ACTUALIZAR: " + @TMX_Promote);
         log ("El UPDATE EXPRESSION ES: "+UpdateExpression);
-        BatchUpdate('data', Filter1, UpdateExpression); //BatchUpdate sirve para actualizar el campo en el evento
+        BatchUpdate('data', Filter1, UpdateExpression);*/ //BatchUpdate sirve para actualizar el campo en el evento
     
         //ACTUALIZACION EN BITACORA
-        msj= fch +"|" + "Evento: " + serial + "|" + "Solucion de evento" + "|" + "El evento fue clareado desde el gestor";
+        /*msj= fch +"|" + "Evento: " + serial + "|" + "Solucion de evento" + "|" + "El evento fue clareado desde el gestor";
         MyKey = serial +":"+ usr +":"+ fch;
         MySQL = "insert into alerts.journal (KeyField,Serial,UID,Chrono,Text1) values('"+ MyKey +"',"+ serial +","+ usr +","+ fch + ",'"+msj+"')";
         log ("El Query del Insert en alerts.journal es: "+MySQL);
-        DirectSQL(Source,MySQL,false);
+        DirectSQL(Source,MySQL,false);*/
     }else{
         log("algo esta fallando");
     }
     
 }else{
-    log("el ticket no coincide")
+    log("el ticket no coincide");
 }
