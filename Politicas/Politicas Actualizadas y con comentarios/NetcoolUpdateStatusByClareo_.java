@@ -4,29 +4,34 @@ log("NetcoolUpdateStatusByClareo");
  * 
  * Realizar validacion para que la politica espere 5 minutos antes de mandar la notificacín para clarear evente
  */
-/*fchClareo = @FirstOcurrence;
+fchClareo = @FirstOccurrence;
+log("Fecha clareo: " + fchClareo);
 tiempo = 300;
+fechaActual = GetDate();
+log("Fecha Actual: " + fechaActual);
 ticket = @SMS_TicketNumber;
 nodo = @TMX_NodeName;
 serial = @Serial;
-diferencia = GetDate()-fchClareo;*/
+diferencia = fechaActual - fchClareo;
 
+log("DIFERENCIA con formato: " + LocalTime(diferencia,"HH:mm:ss") + "\nFecha del clareo con formato: "+ LocalTime(fchClareo,"HH:mm:ss") + 
+"\nFechaActual con formato: " + LocalTime(fechaActual,"HH:mm:ss") + "\nSERIAL" + serial + "\nNODO: " + nodo + "\nTICKET: " + ticket);
+log("Tiempo definido en umbral es:" + LocalTime(tiempo,"HH:mm:ss"));
+log("\nEl tiempo transcurrido del umbral con formato es: " + LocalTime(diferencia, "HH:mm:ss"));
 
   //VARIABLES PARA PRUEBAS
   
-  fchClareo = 1519340189;
+  /*fhClareo = 1519840638;
   tiempo = 300;
   ticket = "IN-1802-000118";
   serial = 91510055;
-  diferencia = GetDate()-fchClareo;
- 
-log("Tiempo definido en umbral es:" + LocalTime(tiempo,"HH:mm:ss"));
-log("\nEl tiempo transcurrido del umbral es: " + LocalTime(diferencia, "HH:mm:ss"));
+  diferencia = GetDate()-fchClareo;*/
 
 if (JavaCall(null, ticket, "matches", {"^[A-Z]{2}-[0-9]{4}-[0-9]{6}$"})) {
-    if(diferencia >= tiempo){
         log("El ticket tiene la nomenclatura correcta");
-         //Esta política está generada por el asistente de Impact. 
+    if(diferencia > tiempo){
+        log("El tiempo que se definio si es de 5 minutos.");
+        //Esta política está generada por el asistente de Impact. 
     
         //Esta política se basa en el archivo WSDL en /opt/IBM/tivoli/impact/NetcoolIncidentOficial.wsdl
     
@@ -83,7 +88,7 @@ if (JavaCall(null, ticket, "matches", {"^[A-Z]{2}-[0-9]{4}-[0-9]{6}$"})) {
     
         /*Filter1="Serial="+serial; Este es el serial del evento
         log ("El serial del evento es: " +Filter1);
-        UpdateExpression="TMX_Promote = 31";
+        UpdateExpression="TMX_Promote = 30";
         log("VALOR DE TMX_PROMOTE ANTES DE ACTUALIZAR: " + @TMX_Promote);
         log ("El UPDATE EXPRESSION ES: "+UpdateExpression);
         BatchUpdate('data', Filter1, UpdateExpression);*/ //BatchUpdate sirve para actualizar el campo en el evento
@@ -94,6 +99,7 @@ if (JavaCall(null, ticket, "matches", {"^[A-Z]{2}-[0-9]{4}-[0-9]{6}$"})) {
         MySQL = "insert into alerts.journal (KeyField,Serial,UID,Chrono,Text1) values('"+ MyKey +"',"+ serial +","+ usr +","+ fch + ",'"+msj+"')";
         log ("El Query del Insert en alerts.journal es: "+MySQL);
         DirectSQL(Source,MySQL,false);*/
+         
     }else{
         log("algo esta fallando");
     }
