@@ -20,12 +20,14 @@ tipoRed = @CMDB_Tipo_Red;
 elemetoRed = @CMDB_Topologia;
 usr=0;
 fch=getdate();
-usuario = @OwnerUID;
+//usuario = @OwnerUID;
 Source="defaultobjectserver";
+SQL = DirectSQL(Source, "SELECT Name FROM master.names WHERE UID = "+@OwnerUID+"", False);
+usuario = SQL[0].Name;
+log("El usuario en consola es: " + usuario);
 
 
-log("\nCIID ES: "+@CMDB_Logical_Name+"\nEL SERIAL ES: "+@Serial+"\nEL CLLI ES: "+@TMX_NodeName+"\nEL PROMOTE ES: " +@TMX_Promote+"\nEL AlertKey ES: "+@AlertKey+"\nTALLY: "+@Tally+"\nLastOcurrence ES: "+@LastOccurrence+"\nEl ESTATUS ES: "+@CMDB_Istatus+"\nEl AlertGroup ES: "+@AlertGroup+"\nLa REFERENCIA SISA ES: "+@TMX_Reference+"\nLA SUBRED ES:"+@CMDB_Subred+"\nEL TIPO DE RED ES:"+@CMDB_Tipo_Red+"\nEL ELEMENTO DE RED ES: "+@CMDB_Topologia+"\nUsuario :"+@OwnerUID);
-log ("\n NOMENCLATURA DE TICKET: " + dato);
+log("\nCIID ES: "+@CMDB_Logical_Name+"\nEL SERIAL ES: "+@Serial+"\nEL CLLI ES: "+@TMX_NodeName+"\nEL PROMOTE ES: " +@TMX_Promote+"\nEL AlertKey ES: "+@AlertKey+"\nTALLY: "+@Tally+"\nLastOcurrence ES: "+@LastOccurrence+"\nEl ESTATUS ES: "+@CMDB_Istatus+"\nEl AlertGroup ES: "+@AlertGroup+"\nLa REFERENCIA SISA ES: "+@TMX_Reference+"\nLA SUBRED ES:"+@CMDB_Subred+"\nEL TIPO DE RED ES:"+@CMDB_Tipo_Red+"\nEL ELEMENTO DE RED ES: "+@CMDB_Topologia+"\nUsuario :"+usuario);
 //Esta política está generada por el asistente de Impact.
 
 //Esta política se basa en el archivo WSDL en /opt/IBM/tivoli/impact/NetcoolIncident.wsdl
@@ -128,7 +130,7 @@ _BanderaCierre = WSNewSubObject(_Instance,"BanderaCierre");
 _BanderaCierre['StringValue'] = "";
 
 _QuienReporta = WSNewSubObject(_Instance,"QuienReporta");
-_QuienReporta['StringValue'] = @OwnerUID;
+_QuienReporta['StringValue'] = usuario;
 
 
 WSParams = {CreateNetcoolIncidentRequestDocument};

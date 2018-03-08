@@ -7,7 +7,7 @@ identificador = @Identifier;
 usr=0;
 fch=getdate();
 repisa = "0" + @TMX_ShelfNumber; 
-puerto =  @PhysicalPort;
+puerto = @PhysicalPort;
 //slot = "0" +  @PhysicalSlot;
 //subSlot = "0" + @TMX_SubInterface;
 
@@ -23,12 +23,7 @@ if (@TMX_SubInterface > 9) {
     subSlot = "0" + @TMX_SubInterface;
 }
 
-/*if (@PhysicalPort > 9) {
-    puerto = @PhysicalPort;
-}else{
-    puerto = "0" + @PhysicalPort;
-}*/
-tarjeta = "0" + @PhysicalCard;
+tarjeta = @PhysicalCard;
 Source="defaultobjectserver";
 SoureceB = "CNSBADP";
 SourceD = "CNSDESA";
@@ -51,23 +46,17 @@ log("Iniciar política 'NetcoolDTCMDB_'...");
     _Model = WSNewSubObject(_RetrieveNetcoolDTCMDBRequest,"Model");
 
     _Keys = WSNewSubObject(_Model,"Keys"); 
-    if (Length(clli) == 11 && ) {
+    if (Length(clli) == 11) {
         _Keys['Query'] = 'display.name="'+clli+'"'; //EQUIPO
+        log("El Equipo es: " + _Keys);
 
-    }elseif(Length(clli) > 11 && tarjeta > 00 && tarjeta != ''){ 
+    }elseif(Length(clli) > 11 && tarjeta > '0' && tarjeta != ''){ 
         _Keys['Query'] = 'display.name= "'+clli+''+'/'+''+repisa+''+'/'+slot+''+'/'+subSlot+'"'; //TARJETA
-    
-    }elseif(Length(clli) > 11 && puerto > 00){
+        log("La Tarjeta es: " + _Keys);
+    }elseif(Length(clli) > 11 && puerto > 0){
         _Keys['Query'] = 'display.name= "'+clli+''+'/'+''+repisa+''+'/'+slot+''+'/'+subSlot+''+'/'+puerto+'"'; //PUERTO
+        log("El Puerto es: " + _Keys);
     }
-
-    /**
-     * TODO:
-     * realizar validacion para los enlaces
-     * 
-     * 
-     * */
-
     _CIID = WSNewSubObject(_Keys,"CIID");
 
     _Instance = WSNewSubObject(_Model,"Instance");
@@ -95,6 +84,7 @@ log("Iniciar política 'NetcoolDTCMDB_'...");
 
     log("Se va a invocar la llamada de servicio web RetrieveNetcoolDTCMDB ......");
 
+    
     WSInvokeDLResult = WSInvokeDL(WSService, WSEndPoint, WSMethod, WSParams, callProps);
     log("Resultado devuelto de la llamada de servicio web RetrieveNetcoolDTCMDB: " +WSInvokeDLResult);
     log("TERMINA LA LLAMADA DEL WS");
