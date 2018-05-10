@@ -1,7 +1,15 @@
+ /**Propósito: LLenar plantilla para generar un ID de incidente en Service Manager
+ * Fuentes:     OMNIbus         DataSource: CNSBADP         DataType: data2
+ *              Servicios       DataSource:                 DataType:
+ * 
+ * Gestores involucrados:  ADSL, RAD y BM
+ * Fecha de Creación:
+ * Fecha de Actualización: 
+ */ 
+
 log("NetcoolCreateIncident_");
 
 
-//CAMPOS PARA SACAR LOS DATOS PARA LA CONSULTA
 ciid = @CMDB_Logical_Name;
 serial = @Serial;
 identificador = @Identifier;
@@ -20,8 +28,7 @@ tipoRed = @CMDB_Tipo_Red;
 elemetoRed = @CMDB_Topologia;
 usr=0;
 fch=getdate();
-//usuario = @OwnerUID;
-Source="defaultobjectserver";
+Source="CNSBADP";
 SQL = DirectSQL(Source, "SELECT Name FROM master.names WHERE UID = "+@OwnerUID+"", False);
 usuario = SQL[0].Name;
 log("El usuario en consola es: " + usuario);
@@ -74,7 +81,6 @@ _FechaInicioDelIncidente = WSNewSubObject(_Instance,"FechaInicioDelIncidente");
 
 //Manejar tipo de calendario especial...
 date = WSNewObject("java.util.GregorianCalendar");
-//log("FECHARINICIODEINCIDENTE: " + date);
 JavaCall(null, date, "setTimeInMillis", { @FirstOccurrence * 1000 });
 _FechaInicioDelIncidente['CalendarValue'] = date;
 
@@ -162,14 +168,14 @@ returnCode = RExtract(WSInvokeDLResult,'.*returnCode="([0-9]).*');
  
 log("El ticket es : " + ticket);
 if (ticket == null && returnCode == 9){
-    Filter1="Serial="+serial; //Este es el serial del evento
+    Filter1="Serial="+serial; 
     log ("El serial del evento es: " +Filter1);
     UpdateExpression="ImpactFlag = 201";
     log ("El UPDATE EXPRESSION ES: "+UpdateExpression);
-    BatchUpdate('data', Filter1, UpdateExpression); //BatchUpdate sirve para actualizar el campo en el evento
+    BatchUpdate('data2', Filter1, UpdateExpression); 
     log("FIN DE LA POLITICA NetcoolCreateIncident_A");
 
-   //ACTUALIZACION EN BITACORA
+
    msj= fch +"|" + "Evento: " + serial + "|" + "Inicia proceso incidente en Service Manager" + "|" + "Error de comunicacion";
    MyKey = serial +":"+ usr +":"+ fch;
    MySQL = "insert into alerts.journal (KeyField,Serial,UID,Chrono,Text1) values('"+ MyKey +"',"+ serial +","+ usr +","+ fch + ",'"+msj+"')";
@@ -178,31 +184,31 @@ if (ticket == null && returnCode == 9){
 
 }
 
-if (JavaCall(null, ticket, "matches", {"^[A-Z]{2}-[0-9]{4}-[0-9]{6}$"})){
+if (JavaCall(null, ticket, "matches", {"^[A-Z]{2}[0-9]{4}_[0-9]{6}$"})){
 
-    Filter1="Serial="+serial; //Este es el serial del evento
+    Filter1="Serial="+serial;
     log ("El serial del evento es: " +Filter1);
     UpdateExpression="SMS_TicketNumber='"+ticket+"', TMX_Promote = 29";
     log ("El UPDATE EXPRESSION ES: "+UpdateExpression);
-    BatchUpdate('data', Filter1, UpdateExpression); //BatchUpdate sirve para actualizar el campo en el evento
+    BatchUpdate('data2', Filter1, UpdateExpression);
     log("FIN DE LA POLITICA NetcoolCreateIncident_A");
 
-   //ACTUALIZACION EN BITACORA
+   
    msj= fch +"|" + "Evento: " + serial + "|" + "Inicia proceso incidente en Service Manager" + "|" + "Se genero exitosamente el insidente en SM" + "|" + "ID del incidente: " + ticket;
    MyKey = serial +":"+ usr +":"+ fch;
    MySQL = "insert into alerts.journal (KeyField,Serial,UID,Chrono,Text1) values('"+ MyKey +"',"+ serial +","+ usr +","+ fch + ",'"+msj+"')";
    log ("El Query del Insert en alerts.journal es: "+MySQL);
    DirectSQL(Source,MySQL,false);
 }else{
-    Filter1="Serial="+serial; //Este es el serial del evento
+    Filter1="Serial="+serial;
     log ("El serial del evento es: " +Filter1);
     UpdateExpression="ImpactFlag = 201";
     log ("El UPDATE EXPRESSION ES: "+UpdateExpression);
-    BatchUpdate('data', Filter1, UpdateExpression); //BatchUpdate sirve para actualizar el campo en el evento
+    BatchUpdate('data2', Filter1, UpdateExpression);
     log("FIN DE LA POLITICA NetcoolCreateIncident_A");
 
-   //ACTUALIZACION EN BITACORA
-   msj= fch +"|" + "Evento: " + serial + "|" + "Inicia proceso incidente en Service Manager" + "|" + "Error de informacion enviada";
+   
+   msj= fch +"|" + "Evento: " + serial + "|" + "Inicia proceso incidente en Service Manager" + "|" + "Error de información recibida";
    MyKey = serial +":"+ usr +":"+ fch;
    MySQL = "insert into alerts.journal (KeyField,Serial,UID,Chrono,Text1) values('"+ MyKey +"',"+ serial +","+ usr +","+ fch + ",'"+msj+"')";
    log ("El Query del Insert en alerts.journal es: "+MySQL);
