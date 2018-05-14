@@ -170,7 +170,7 @@ log("El ticket es : " + ticket);
 if (ticket == null && returnCode == 9){
     Filter1="Serial="+serial; 
     log ("El serial del evento es: " +Filter1);
-    UpdateExpression="ImpactFlag = 201";
+    UpdateExpression="ImpactFlag = 301";
     log ("El UPDATE EXPRESSION ES: "+UpdateExpression);
     BatchUpdate('data', Filter1, UpdateExpression); 
     log("FIN DE LA POLITICA NetcoolCreateIncident_A");
@@ -202,7 +202,7 @@ if (JavaCall(null, ticket, "matches", {"^[A-Z]{2}[0-9]{4}_[0-9]{6}$"})){
 }else{
     Filter1="Serial="+serial;
     log ("El serial del evento es: " +Filter1);
-    UpdateExpression="ImpactFlag = 201";
+    UpdateExpression="ImpactFlag = 301";
     log ("El UPDATE EXPRESSION ES: "+UpdateExpression);
     BatchUpdate('data', Filter1, UpdateExpression);
     log("FIN DE LA POLITICA NetcoolCreateIncident_A");

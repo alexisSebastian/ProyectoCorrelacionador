@@ -69,7 +69,7 @@ log("Resultado devuelto de la llamada de servicio web RetrieveNetcoolIncidentesC
 returnCode = RExtract(WSInvokeDLResult,'.*returnCode="([0-9]).*');
 idIncidente = RExtract(WSInvokeDLResult,'.*<IdIncidente type=.*>(.*)</IdIncidente>.*');
 
-if(returnCode = 9 || impactFlag = 200){
+if(returnCode = 9 || impactFlag = 300){
     Filter1="Serial="+serial; //Este es el serial del evento
     log ("El serial del evento es: " +Filter1);
     UpdateExpression="TMX_Promote = 28";
@@ -83,7 +83,7 @@ if(returnCode = 9 || impactFlag = 200){
     log ("El Query del Insert en alerts.journal es: "+MySQL);
     DirectSQL(Source,MySQL,false);
     
-}elseif (returnCode = 0 || ImpactFlag = 201){
+}elseif (returnCode = 0 || ImpactFlag = 301){
    //EJECUTAR UN BATCHUPDATE PARA AGREGAR EL NUMERO DE TICKET Y PROMOVER A 29
     Filter1="Serial="+serial; //Este es el serial del evento
     log ("El serial del evento es: " +Filter1);

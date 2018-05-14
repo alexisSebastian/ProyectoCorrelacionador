@@ -87,7 +87,7 @@ if(returnCode = 9){
 }elseif (returnCode = 0){
     Filter1="Serial="+serial; 
     log ("El serial del evento es: " +Filter1);
-    UpdateExpression="SMS_TicketNumber='"+idIncidente+"', ImpactFlag = 201";
+    UpdateExpression="SMS_TicketNumber='"+idIncidente+"', ImpactFlag = 301";
     log ("El UPDATE EXPRESSION ES: "+UpdateExpression);
     BatchUpdate('data', Filter1, UpdateExpression);
 

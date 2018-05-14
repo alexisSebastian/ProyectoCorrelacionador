@@ -96,7 +96,7 @@ if((CIId != "" && elemetRed != "" && estatus != "")|| (elementRed = "Equipo" && 
     //Se actualiza en la tabla alerts.status
     Filter1="Serial="+serial;
     log ("El serial del evento es: " +Filter1);
-    UpdateExpression="ImpactFlag=201, TMX_Promote = 0";
+    UpdateExpression="ImpactFlag=301, TMX_Promote = 0";
     log ("El UPDATE EXPRESSION ES: "+UpdateExpression);
     BatchUpdate('data', Filter1, UpdateExpression);
 
@@ -110,7 +110,7 @@ if((CIId != "" && elemetRed != "" && estatus != "")|| (elementRed = "Equipo" && 
 
     Filter1="Serial="+serial;
     log ("El serial del evento es: " +Filter1);
-    UpdateExpression="ImpactFlag=201, TMX_Promote = 0";
+    UpdateExpression="ImpactFlag=301, TMX_Promote = 0";
     log ("El UPDATE EXPRESSION ES: "+UpdateExpression);
     BatchUpdate('data', Filter1, UpdateExpression);
 

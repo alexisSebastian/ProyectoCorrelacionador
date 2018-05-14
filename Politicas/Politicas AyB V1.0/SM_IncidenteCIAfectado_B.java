@@ -71,7 +71,7 @@ log("Resultado devuelto de la llamada de servicio web RetrieveNetcoolIncidentesC
 returnCode = RExtract(WSInvokeDLResult,'.*returnCode="([0-9]).*');
 idIncidente = RExtract(WSInvokeDLResult,'.*<IdIncidente type=.*>(.*)</IdIncidente>.*');
 
-if(returnCode = 9 && impactFlag = 200){
+if(returnCode = 9 && impactFlag = 300){
     Filter1="Serial="+serial; 
     log ("El serial del evento es: " +Filter1);
     UpdateExpression="TMX_Promote = 28";
@@ -87,7 +87,7 @@ if(returnCode = 9 && impactFlag = 200){
 }elseif (returnCode = 0){
     Filter1="Serial="+serial; 
     log ("El serial del evento es: " +Filter1);
-    UpdateExpression="SMS_TicketNumber='"+idIncidente+"', ImpactFlag = 201";
+    UpdateExpression="SMS_TicketNumber='"+idIncidente+"', ImpactFlag = 301";
     log ("El UPDATE EXPRESSION ES: "+UpdateExpression);
     BatchUpdate('data2', Filter1, UpdateExpression);
 

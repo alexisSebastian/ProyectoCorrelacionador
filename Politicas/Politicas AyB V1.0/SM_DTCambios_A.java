@@ -68,7 +68,7 @@ returnCode = RExtract(WSInvokeDLResult,'.*returnCode="([0-9]).*');
 if(returnCode = 9){
     Filter1="Serial="+serial; 
     log ("El serial del evento es: " +Filter1);
-    UpdateExpression="TMX_Promote = 27, ImpactFlag=200";
+    UpdateExpression="TMX_Promote = 27, ImpactFlag=300";
     log ("El UPDATE EXPRESSION ES: "+UpdateExpression);
     BatchUpdate('data', Filter1, UpdateExpression);
 
@@ -86,7 +86,7 @@ elseif(returnCode = 0){
   
     Filter1="Serial="+serial; 
     log ("El serial del evento es: " +Filter1);
-    UpdateExpression="ImpactFlag=201"; 
+    UpdateExpression="ImpactFlag=301"; 
     log ("El UPDATE EXPRESSION ES: "+UpdateExpression);
     BatchUpdate('data', Filter1, UpdateExpression);
 

@@ -63,7 +63,7 @@ returnCode = RExtract(WSInvokeDLResult,'.*returnCode="([0-9]).*');
 if(returnCode = 9){
     Filter1="Serial="+serial; //Este es el serial del evento
     log ("El serial del evento es: " +Filter1);
-    UpdateExpression="TMX_Promote = 27, ImpactFlag=200";
+    UpdateExpression="TMX_Promote = 27, ImpactFlag=300";
     log ("El UPDATE EXPRESSION ES: "+UpdateExpression);
     BatchUpdate('data', Filter1, UpdateExpression); //BatchUpdate sirve para actualizar el campo en el evento
 
@@ -75,13 +75,13 @@ if(returnCode = 9){
     DirectSQL(Source,MySQL,false);
 }
 
-//Si el evento tiene cambios entonces el valor de impactFlag = 201 
+//Si el evento tiene cambios entonces el valor de impactFlag = 301 
 elseif(returnCode = 0){
 
   //Validación para que los valores no vengan vacíos o nulos  
     Filter1="Serial="+serial; //Este es el serial del evento
     log ("El serial del evento es: " +Filter1);
-    UpdateExpression="ImpactFlag=201"; //agregar campos del evento esperar confirmación
+    UpdateExpression="ImpactFlag=301"; //agregar campos del evento esperar confirmación
     log ("El UPDATE EXPRESSION ES: "+UpdateExpression);
     BatchUpdate('data', Filter1, UpdateExpression); //BatchUpdate sirve para actualizar el campo en el evento
 

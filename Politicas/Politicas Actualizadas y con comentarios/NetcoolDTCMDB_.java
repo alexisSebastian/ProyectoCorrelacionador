@@ -113,7 +113,7 @@ log("Iniciar política 'NetcoolDTCMDB_'...");
     {
         Filter1="Serial="+serial; //Este es el serial del evento
         log ("El serial del evento es: " +Filter1);
-        UpdateExpression="CMDB_Logical_Name='"+CIId+"',CMDB_Istatus='"+estatus+"',CMDB_Subred='"+subRed+"',CMDB_Tipo_Red='"+tipoRed+"',CMDB_Model='"+modelo+"',CMDB_Topologia='"+elemetRed+"',TMX_Promote = 26, ImpactFlag=200";
+        UpdateExpression="CMDB_Logical_Name='"+CIId+"',CMDB_Istatus='"+estatus+"',CMDB_Subred='"+subRed+"',CMDB_Tipo_Red='"+tipoRed+"',CMDB_Model='"+modelo+"',CMDB_Topologia='"+elemetRed+"',TMX_Promote = 26, ImpactFlag=300";
         log("VALOR DE TMX_PROMOTE ANTES DE ACTUALIZAR: " + @TMX_Promote);
         log ("El UPDATE EXPRESSION ES: "+UpdateExpression);
         BatchUpdate('data', Filter1, UpdateExpression); //BatchUpdate sirve para actualizar el campo en el evento
@@ -130,7 +130,7 @@ log("Iniciar política 'NetcoolDTCMDB_'...");
             //Se actualiza en la tabla alerts.status
             Filter1="Serial="+serial;
             log ("El serial del evento es: " +Filter1);
-            UpdateExpression="ImpactFlag=201, TMX_Promote = 0";
+            UpdateExpression="ImpactFlag=301, TMX_Promote = 0";
             log ("El UPDATE EXPRESSION ES: "+UpdateExpression);
             BatchUpdate('data', Filter1, UpdateExpression);
 
@@ -143,7 +143,7 @@ log("Iniciar política 'NetcoolDTCMDB_'...");
         }elseif(returnCode == 0){
             Filter1="Serial="+serial;
             log ("El serial del evento es: " +Filter1);
-            UpdateExpression="ImpactFlag=201, TMX_Promote = 0,CMDB_Logical_Name='"+CIId+"',CMDB_Istatus='"+estatus+"',CMDB_Subred='"+subRed+"',CMDB_Tipo_Red='"+tipoRed+"',CMDB_Model='"+modelo+"',CMDB_Topologia='"+elemetRed+"'";
+            UpdateExpression="ImpactFlag=301, TMX_Promote = 0,CMDB_Logical_Name='"+CIId+"',CMDB_Istatus='"+estatus+"',CMDB_Subred='"+subRed+"',CMDB_Tipo_Red='"+tipoRed+"',CMDB_Model='"+modelo+"',CMDB_Topologia='"+elemetRed+"'";
             log ("El UPDATE EXPRESSION ES: "+UpdateExpression);
             BatchUpdate('data', Filter1, UpdateExpression);
 
