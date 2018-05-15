@@ -7,7 +7,7 @@
  * Fecha de Actualización: 
  */
 
-log("NetcoolCreateIncident_");
+log("NetcoolCreateIncident_A");
 
 
 ciid = @CMDB_Logical_Name;
